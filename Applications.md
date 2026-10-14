@@ -28,6 +28,18 @@ D<\kappa_a\min\{\beta_a-L,U-\beta_a\}
 puts both coordinates in $(L,U)$. This transfers a deficit in three
 approximation coefficients into information about each tail separately.
 
+For a measured maximum excess $E=G_a(x,y)-c_a$, the maximum inverse
+estimate similarly gives
+
+```math
+\max\{|x-\beta_a|,|y-\beta_a|\}\le E/\lambda_a,
+\qquad \lambda_a=\frac{a\beta_a}{a^2+4}.
+```
+
+Its coefficient is optimal on the square and on actual triples. The
+inequality is strict on actual triples, and equality on the square
+occurs only at the metallic point.
+
 ## A small deficit forces an actual constant-digit window
 
 Let $a\ge2$ be an integer and $r\ge0$. Sort the endpoints of
@@ -62,8 +74,8 @@ an interior remainder. The literal reversed finite expansion, including terminal
 ones, is retained.
 
 The threshold uses exact rational cylinder endpoints and the metallic
-root. It is a sufficient threshold; optimal thresholds for individual
-windows are not claimed. With the continuants in Proof.md (4), it also
+root. This is a convenient sufficient threshold. The exact optimal cutoffs
+below strengthen it for each specified window. With the continuants in Proof.md (4), it also
 has the explicit algebraic form
 
 ```math
@@ -84,6 +96,54 @@ formula to obtain
 
 Evaluating at $t=0,1$ gives (2). The Lean digit-window contract uses the
 sorted iterated endpoints directly.
+
+## Optimal cutoffs for a prescribed digit window
+
+For $0\le L<\beta_a<U\le1$, define the exact rational-profile cutoffs
+
+```math
+B_F(L,U)=\max\{\phi_a(L),\phi_a(U)\},\qquad
+B_G(L,U)=\min\{\psi_a(L),\psi_a(U)\}.
+```
+
+Outside $(L,U)^2$, the largest possible minimum is $B_F$ and the smallest
+possible maximum is $B_G$. Both values are attained on the closed square:
+a coordinate equals an endpoint selecting the cutoff, and the other is
+the profile witness in Proof.md. The side monotonicities show that every
+point farther outside satisfies the corresponding bound. Thus either
+$F_a(x,y)>B_F$ or $G_a(x,y)<B_G$ forces both coordinates into $(L,U)$.
+For different past and future intervals, use the maximum of the four
+lower-profile endpoint values and the minimum of the four upper-profile
+endpoint values. The same proof gives exact complement extrema.
+
+Take $[L,U]=K_r$, where $r\ge1$. For actual irrational triples with integer
+central digit $a\ge2$, either test forces exactly the window conclusion
+(1), including $r\le n$. These are optimal numerical cutoffs even over
+actual triples, allowing the finite index to vary: for every
+$\epsilon>0$ there is a triple with a future digit violating the required
+window and minimum greater than $B_F-\epsilon$; another has maximum less
+than $B_G+\epsilon$.
+
+To see this, choose the boundary endpoint and profile witness attaining
+the relevant cutoff. Approach that endpoint by irrational future
+coordinates from outside $K_r$, while positive rational pasts approach
+the other coordinate. Finite-word realization yields actual triples;
+continuity gives the objective limit. A future outside $K_r$ cannot have
+its first $r$ digits all equal to $a$. This construction also avoids
+any ambiguity in rational finite endpoint expansions.
+
+The exact silver cutoffs are:
+
+| Required digits on each side | Cylinder $K_r$ | Minimum must exceed $B_F$ | Maximum must be below $B_G$ |
+| --- | --- | --- | --- |
+| $r=1$ | $[1/3,1/2]$ | $10/29$ | $21/58$ |
+| $r=2$ | $[2/5,3/7]$ | $119/338$ | $60/169$ |
+| $r=3$ | $[7/17,5/12]$ | $348/985$ | $697/1970$ |
+
+The actual extraction theorem also permits different past and future
+lengths $r,s$, using their four endpoint values; only the past requires
+$r\le n$. The varying-index actual optimality statement above concerns
+the symmetric window $r=s$.
 
 ## Effective convergence of all run constants
 
@@ -114,6 +174,32 @@ be optimal. Exact interval widths follow from the continuant identity:
 =\frac{v-u}{(P_ru+P_{r+1})(P_rv+P_{r+1})}\qquad(0\le u<v\le1).
 ```
 
+A more precise two-sided estimate uses the actual endpoint distances.
+For a terminated run cell $I_r^e=[\ell_r^e,u_r^e]$, put
+
+```math
+d_r^e=\min\{|\ell_r^e-\beta_a|,|u_r^e-\beta_a|\},\qquad
+E_r^e=\max\{|\ell_r^e-\beta_a|,|u_r^e-\beta_a|\}.
+```
+
+The cell lies wholly on one side of $\beta_a$, so every point in it has
+distance between these values. Applying the two sharp stability
+inequalities and the Lipschitz estimates at the optimizing corners gives
+
+```math
+\kappa_a\max\{d_r^e,d_s^f\}
+ \le c_a-C_{a;r,s}^{e,f}\le E_r^e+E_s^f,
+```
+
+```math
+\lambda_a\max\{d_r^e,d_s^f\}
+ \le U_{a;r,s}^{e,f}-c_a\le E_r^e+E_s^f.
+```
+
+These hold for every real $a\ge2$, both departure sides, and all finite
+run lengths. They provide positive lower bounds as well as effective
+upper bounds for each gap.
+
 ## Exact regions for near extremizers
 
 For $0<t<a$ and nonnegative $x,y$, let
@@ -135,8 +221,8 @@ Intersect with a prescribed cylinder rectangle. Taking
 $t=C(R)-\epsilon>0$ describes exactly the lower-envelope values within
 $\epsilon$ of the supremum. Taking $t=U(R)+\epsilon<a$ gives the
 upper-envelope sublevel region. These equivalences include degenerate
-rectangles and do not assert a separate optimal stability coefficient
-for the upper envelope.
+rectangles. The separate maximum inverse estimate supplies its optimal
+uniform linear coefficient.
 
 ## Fixed words and boundary attainability
 

@@ -8,11 +8,12 @@ project:
     constants, unique coordinate extremizers, strict actual inequalities,
     and optimality within the prescribed digit classes. The project also
     proves exact clipping on every closed unit-square rectangle for every
-    real parameter at least one; sharp inverse stability for every real
-    parameter at least two, including its complete equality locus and
+    real parameter at least one; sharp inverse stability for both extrema for every real
+    parameter at least two, including their equality loci and
     actual-convergent optimality; fixed-word sharpness at a fixed index;
     constant-future and exhausted-past boundary results; effective
-    convergence; and an actual constant-digit-window consequence.
+    two-sided run-gap estimates; optimal actual constant-digit-window
+    cutoffs; and an executable rational Lean interface.
   authors: [JD Jones]
   responsible_maintainers: [JD Jones]
   license: MIT
@@ -26,7 +27,7 @@ sources:
     relationship: other
     note: >-
       This project first presents its exact-run classification, sharp
-      inverse estimate, and accompanying rectangle and quantitative results. Proof.md and Applications.md accompany the same
+      inverse estimates, sharp window cutoffs, and accompanying rectangle and quantitative results. Proof.md and Applications.md accompany the same
       development and are not distinct earlier sources. The original-proof
       provenance designation does not assert worldwide priority. Classical
       metallic thresholds and natural-extension geometry are credited below.
@@ -78,6 +79,12 @@ automation:
         Agents developed and reviewed mathematical arguments, formal
         proofs, documentation, and verification under JD Jones's direction.
     - method: other
+      models: [GPT-6 Pro]
+      tool_setup: Mathematical review and independent exact arithmetic
+      prompting_notes: >-
+        Supplied feedback and proposed extensions; Codex agents adapted
+        the exact calculator and formalized the resulting statements.
+    - method: other
       models: [Gemini-Argon]
       tool_setup: Preliminary mathematical discussion
   notes: >-
@@ -89,7 +96,7 @@ review:
   notes: >-
     Separate agent review checked ordinary-convergent semantics, indexing,
     exact departures, finite-endpoint alternatives, sharpness quantifiers,
-    and the stability equality locus. Verification.md records the
+    both stability equality loci, and sharp digit-window quantifiers. Verification.md records the
     reproducible mechanical checks. No independent human specialist
     review or worldwide-priority determination is claimed.
 status:
@@ -100,12 +107,15 @@ status:
     positive finite word and its index. Rectangle optimization covers every
     real parameter at least one and all closed rectangles in the unit
     square, including degenerate rectangles and the lower-envelope zero-axis
-    exception. Inverse stability covers every real parameter at least two.
+    exception. Both inverse inequalities cover every real parameter at least two.
     Boundary contracts include exhausted finite pasts, the characterization
     of infinite constant futures, genuine attained metallic-future examples,
     and exact alternating coefficient formulas. Quantitative contracts give
-    convergence rates and a sufficient deficit threshold for actual digit
-    windows; optimal window thresholds are not asserted. Verification.md
+    two-sided run-gap bounds and optimal symmetric digit-window thresholds
+    over actual triples with varying finite index. Four-endpoint rectangle
+    cutoffs also force asymmetric actual windows; separate actual optimality
+    for asymmetric windows is not asserted. Rational executable definitions
+    are proved equal to the corresponding real exact-run constants. Verification.md
     and comparator.json specify the complete compared declarations.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -164,6 +174,42 @@ status:
       comparator_config: comparator.json
     - declaration: ContinuedFractionBounds.small_deficit_digit_window
       file: ContinuedFractionBounds/DigitWindows.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.global_upper_stability
+      file: ContinuedFractionBounds/UpperStability.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.global_upper_stability_eq_iff
+      file: ContinuedFractionBounds/UpperStability.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.upperStabilityConstant_optimal
+      file: ContinuedFractionBounds/UpperStability.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.actual_upperStabilityConstant_optimal
+      file: ContinuedFractionBounds/ActualUpperStability.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.run_gap_bounds
+      file: ContinuedFractionBounds/RunGapBounds.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.lowerProfile_optimal
+      file: ContinuedFractionBounds/FiberProfiles.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.upperProfile_optimal
+      file: ContinuedFractionBounds/FiberProfiles.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.sharp_window_complement_bounds
+      file: ContinuedFractionBounds/SharpDigitWindows.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.rational_actual_run_bounds
+      file: ContinuedFractionBounds/RationalBounds.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.sharp_window_digit_window
+      file: ContinuedFractionBounds/SharpDigitWindows.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.actual_lower_window_threshold_optimal
+      file: ContinuedFractionBounds/SharpWindowsRealization.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.actual_upper_window_threshold_optimal
+      file: ContinuedFractionBounds/SharpWindowsRealization.lean
       comparator_config: comparator.json
 fidelity:
   divergences: >-

@@ -2,7 +2,9 @@ name: Verify exact continued-fraction-bounds commit
 
 on:
   push:
-    branches: ['codex/**']
+    branches: ['main', 'codex/**']
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
     inputs:
       expected_sha:
@@ -43,7 +45,8 @@ jobs:
       - name: Validate formalization metadata
         run: |
           python3 -m pip install -r verification/requirements.txt
-          python3 scripts/validate_metadata.py
+          mkdir -p .lake/verification
+          python3 scripts/validate_metadata.py | tee .lake/verification/metadata.log
       - name: Install pinned Lean and retrieve pinned Mathlib cache
         uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1
         with:
@@ -54,7 +57,7 @@ jobs:
           use-github-cache: false
           use-mathlib-cache: true
       - name: Check proof sources and theorem contracts
-        run: python3 scripts/check_sources.py
+        run: python3 scripts/check_sources.py | tee .lake/verification/source-check.log
       - name: Build the complete formal package
         run: |
           mkdir -p .lake/verification
@@ -63,10 +66,12 @@ jobs:
         run: python3 scripts/audit_axioms.py
       - name: Replay exact arithmetic and mathematical negative controls
         run: |
-          python3 scripts/exact_replay.py
-          python3 -O scripts/exact_replay.py
-          python3 scripts/independent_replay.py
-          python3 -O scripts/independent_replay.py
+          python3 scripts/exact_replay.py | tee .lake/verification/exact-replay.log
+          python3 -O scripts/exact_replay.py | tee .lake/verification/exact-replay-optimized.log
+          python3 scripts/independent_replay.py | tee .lake/verification/independent-replay.log
+          python3 -O scripts/independent_replay.py | tee .lake/verification/independent-replay-optimized.log
+          python3 scripts/extensions_replay.py --output .lake/verification/extensions-replay.json
+          python3 -O scripts/extensions_replay.py --output .lake/verification/extensions-replay-optimized.json
           python3 scripts/check_negative_controls.py
       - name: Install the official pinned sandbox
         run: |
@@ -88,7 +93,7 @@ jobs:
           name: formal-verification-${{ github.sha }}
           path: .lake/verification/
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 90
 
   fresh-project-build:
     runs-on: ubuntu-24.04
@@ -129,4 +134,4 @@ jobs:
           name: fresh-project-build-${{ github.sha }}
           path: .lake/verification/
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 90

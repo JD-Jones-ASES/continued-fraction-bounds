@@ -4,7 +4,7 @@ The ordinary arbitrary-digit Borel minimum threshold and Tong maximum
 threshold are classical. Natural-extension coordinates and geometric
 optimization of approximation coefficients are also established methods.
 The results studied here refine those bounds using exact terminated
-runs and give an optimal global linear inverse estimate. The accompanying
+runs and give optimal global linear inverse estimates for both extrema. The accompanying
 proofs are the mathematical account of this project, not a separate
 earlier source. No worldwide-priority claim is made.
 
@@ -18,7 +18,7 @@ suggests the arbitrary-digit refinement and the corresponding refinement
 of Tong's maximum bound. This suggestion and the geometric approach are
 credited to those authors. The present account treats all integer central
 digits $a\ge2$, both objectives, exact departure types, actual
-continued-fraction realization, and the inverse-stability coefficient.
+continued-fraction realization, and both inverse-stability coefficients and optimal digit-window cutoffs.
 
 The relevant earlier literature includes:
 

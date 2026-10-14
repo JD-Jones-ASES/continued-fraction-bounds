@@ -12,11 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / ".lake/verification/negative-controls"
 
 PREFIX = """module
-public import ContinuedFractionBounds.Applications
-public import ContinuedFractionBounds.ContinuedFractionsWords
-public import ContinuedFractionBounds.ActualRuns
-public import ContinuedFractionBounds.RunChecks
-public import ContinuedFractionBounds.RectangleOptimization
+public import ContinuedFractionBounds
 public section
 open ContinuedFractionBounds
 """
@@ -79,6 +75,34 @@ example {α : ℝ} (hα : Irrational α) (n : ℕ) (x y : ℝ) :
   exact actual_minimum_eq hα n
 """, "lower (digit α (n+2)) (past α n) (future α n)",
      "lower (digit α (n+2)) x y"),
+
+    ("sharp-maximum-stability-coefficient", """
+example {a x y : ℝ} (ha : 2 ≤ a) (hx : 0 ≤ x) (hx1 : x ≤ 1)
+    (hy : 0 ≤ y) (hy1 : y ≤ 1) :
+    upperStabilityConstant a * max |x-metallic a| |y-metallic a| ≤ upper a x y-threshold a := by
+  exact global_upper_stability ha hx hx1 hy hy1
+""", "upperStabilityConstant a *", "(upperStabilityConstant a+1) *"),
+    ("maximum-stability-requires-digit-two", """
+example {a x y : ℝ} (ha : 2 ≤ a) (hx : 0 ≤ x) (hx1 : x ≤ 1)
+    (hy : 0 ≤ y) (hy1 : y ≤ 1) :
+    upperStabilityConstant a * max |x-metallic a| |y-metallic a| ≤ upper a x y-threshold a := by
+  exact global_upper_stability ha hx hx1 hy hy1
+""", "(ha : 2 ≤ a)", "(ha : 1 ≤ a)"),
+    ("maximum-equality-only-at-center", """
+example {a x y : ℝ} (ha : 2 ≤ a) (hx : 0 ≤ x) (hx1 : x ≤ 1)
+    (hy : 0 ≤ y) (hy1 : y ≤ 1) :
+    (upper a x y-threshold a = upperStabilityConstant a * max |x-metallic a| |y-metallic a|) ↔
+      (x = metallic a ∧ y = metallic a) := by
+  exact global_upper_stability_eq_iff ha hx hx1 hy hy1
+""", "(x = metallic a ∧ y = metallic a)", "((x = metallic a ∧ y = metallic a) ∨ (x = 1 ∧ y = 1/(a+1)))"),
+    ("optimal-silver-digit-cutoff", """
+example : sharpLowerDigitThreshold 2 1 = (10/29 : ℝ) := by
+  exact silver_sharp_window_one.1
+""", "(10/29 : ℝ)", "(1/3 : ℝ)"),
+    ("rational-calculator-distinguishes-objectives", """
+example : rationalMinimumSupremum 2 1 1 .low .high = (10/29 : ℚ) := by
+  exact rational_silver_one_mixed.1
+""", "(10/29 : ℚ)", "(21/58 : ℚ)"),
 
 ]
 

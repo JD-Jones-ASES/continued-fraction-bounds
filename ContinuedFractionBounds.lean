@@ -10,3 +10,7 @@ public import ContinuedFractionBounds.MetallicBoundary
 public import ContinuedFractionBounds.DigitWindows
 public import ContinuedFractionBounds.RunChecks
 public import ContinuedFractionBounds.FixedPast
+public import ContinuedFractionBounds.ActualUpperStability
+public import ContinuedFractionBounds.RunGapBounds
+public import ContinuedFractionBounds.SharpWindowsRealization
+public import ContinuedFractionBounds.RationalBounds

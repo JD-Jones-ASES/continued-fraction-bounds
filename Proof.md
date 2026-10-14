@@ -326,6 +326,95 @@ triples: take $[0;1,a,a+1,N,\overline2]$ with triple index $n=0$.
 Its past is $1$ and its future tends to $1/(a+1)$, so the ratio of
 deficit to distance tends to $\kappa_a$.
 
+## Optimal inverse stability for the maximum
+
+For every real $a\ge2$, define
+
+```math
+\lambda_a=\frac{a\beta_a}{a^2+4}
+=\frac{c_a a}{1+(a+\beta_a)^2}>0.
+```
+
+The corresponding sharp estimate is
+
+```math
+G_a(x,y)-c_a\ge\lambda_a
+\max\{|x-\beta_a|,|y-\beta_a|\},\qquad (x,y)\in[0,1]^2. \tag{7}
+```
+
+Equality holds only at $(\beta_a,\beta_a)$. The coefficient is nevertheless
+largest possible: unlike the minimum estimate, its sharpness is a limiting
+phenomenon near that point. For $a=2$, $\lambda_2=(\sqrt2-1)/4$.
+
+Here is an algebraic proof. Write $\beta=\beta_a$, $c=c_a$,
+$\lambda=\lambda_a$, and $f(z)=z/(1+z^2)$. For a coordinate $t\le\beta$,
+$G_a(t,u)\ge f(a+t)$ for every $u\in[0,1]$, and
+
+```math
+f(a+t)-c-\lambda(\beta-t)
+=\frac{c(\beta-t)^2\bigl(a(a+t)-2\bigr)}
+ {(1+(a+t)^2)(1+(a+\beta)^2)}.
+```
+
+This is positive when $t<\beta$. For $\beta<t\le1$, the other envelope
+bound $G_a(t,u)\ge f(t)$ gives
+
+```math
+\frac{f(t)-c}{t-\beta}
+=\frac{1-\beta t}{(1+t^2)(1+\beta^2)}
+\ge\frac{1-\beta}{2(1+\beta^2)}>\lambda.
+```
+
+Use the coordinate farthest from $\beta$ and symmetry to prove (7), with
+strictness away from the center. On the switching curve
+$(x,y)=(t,1/(a+t))$, as $t$ increases to $\beta$ from below,
+$G_a(x,y)=f(a+t)$ and the maximum coordinate distance is $\beta-t$.
+The displayed remainder divided by $\beta-t$ tends to zero, proving
+coefficient optimality on the square. The hypothesis $a\ge2$ matters:
+the same formula fails for $a=1$ at $(0,1)$.
+
+For integer $a\ge2$, actual triples satisfy (7) strictly, since their
+rational past cannot equal $\beta_a$. Optimality also transfers to actual
+triples. Every rational $x\in(0,1]$ has a nonempty positive finite
+continued-fraction word, proved by descent on its numerator. Reversing
+that word, inserting the central digit $a$, and appending any irrational
+$y\in(0,1)$ realizes the coordinates exactly. These pairs are dense in
+the closed square. Continuity would extend any larger uniform actual
+coefficient to the square, contradicting the preceding sharpness.
+The finite index may vary in this argument.
+
+## Exact one-coordinate profiles
+
+For $0\le t\le1$, let $\phi_a(t)=\max_{0\le u\le1}F_a(t,u)$ and
+$\psi_a(t)=\min_{0\le u\le1}G_a(t,u)$. Direct switching-curve optimization
+gives the complete formulas
+
+```math
+\phi_a(t)=
+\begin{cases}
+ t(a+1)/(a+1+t),&0\le t\le1/(a+1),\\
+ t/(1+t^2),&1/(a+1)\le t\le\beta_a,\\
+ (a+t)/(1+(a+t)^2),&\beta_a\le t\le1,
+\end{cases}
+```
+
+```math
+\psi_a(t)=
+\begin{cases}
+ (a+t)/(1+(a+t)^2),&0\le t\le\beta_a,\\
+ t/(1+t^2),&\beta_a\le t\le1/a,\\
+ at/(a+t),&1/a\le t\le1.
+\end{cases}
+```
+
+Corresponding maximizing coordinates are $1$, $1/t-a$, and $1/(a+t)$;
+minimizing coordinates are $1/(a+t)$, $1/t-a$, and $0$. The formulas agree
+at their shared endpoints. At $t=0$ every second coordinate maximizes
+$F_a(0,u)=0$, and the stated witness $1$ remains valid. The lower profile
+is strictly increasing up to $\beta_a$ and strictly decreasing after it;
+the upper profile has the opposite monotonicity. These statements,
+including endpoint attainment, are proved for every real $a\ge2$.
+
 ## Fixed pasts and constant-future boundaries
 
 A prescribed nonempty positive chronological word $w$ fixes the entire
