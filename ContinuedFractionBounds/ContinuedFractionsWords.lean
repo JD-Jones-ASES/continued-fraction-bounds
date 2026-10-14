@@ -164,4 +164,12 @@ theorem finite_word_realization {w : List ℤ} (hw : PositiveWord w)
     rw [show w.length-1+2=w.length+1 by omega, hnext]
     exact fract_int_add_tail a hy₀.le hy₁
 
+/-- The noncanonical terminal pair is essential for the below-digit finite endpoint. -/
+theorem terminal_one_endpoint (a : ℤ) :
+    prependWord [a-1,1] 0 = 1/(a:ℝ) := by
+  simp [prependWord, prependDigit]
+
+theorem single_one_endpoint : prependWord [1] 0 = 1 := by
+  simp [prependWord, prependDigit]
+
 end ContinuedFractionBounds

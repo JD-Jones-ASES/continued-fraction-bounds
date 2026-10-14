@@ -1,17 +1,19 @@
 # Sharp continued-fraction bounds from exact digit runs
 
-Let $\alpha=[a_0;a_1,a_2,\ldots]$ be irrational, and let $p_i/q_i$ be
-its ordinary simple continued-fraction convergents. Write
-$\Theta_i=q_i|q_i\alpha-p_i|$. Fix $n\ge1$ and $a_{n+1}=a\ge2$.
-The finite past and infinite future coordinates are
+Let $\alpha=[a_0;a_1,a_2,\ldots]$ be irrational, let $p_i/q_i$ be its
+ordinary simple continued-fraction convergents, and write
+$\Theta_i=q_i|q_i\alpha-p_i|$. Fix $n\ge0$ and the central digit
+$a_{n+2}=a\ge2$. Throughout this account and the Lean statements, the
+chronological triple is $(\Theta_n,\Theta_{n+1},\Theta_{n+2})$.
+Its finite past and infinite future coordinates are
 
 ```math
-x=[0;a_n,\ldots,a_1]=q_{n-1}/q_n,
-\qquad y=[0;a_{n+2},a_{n+3},\ldots].
+x=[0;a_{n+1},\ldots,a_1]=q_n/q_{n+1},\qquad
+y=[0;a_{n+3},a_{n+4},\ldots].
 ```
 
-Thus $x\in\mathbb Q\cap(0,1]$ and $y\in(0,1)\setminus\mathbb Q$.
-In particular, $x=1$ is allowed. Define
+Thus $x\in\mathbb Q\cap(0,1]$ and
+$y\in(0,1)\setminus\mathbb Q$; the endpoint $x=1$ is allowed. Set
 
 ```math
 T_a(t)=\frac1{a+t},\quad
@@ -19,172 +21,197 @@ T_a(t)=\frac1{a+t},\quad
 c_a=\frac1{\sqrt{a^2+4}},
 ```
 
-and
+and define the two envelopes
 
 ```math
 F_a(x,y)=\frac{\min\{1,x(a+y),y(a+x)\}}{a+x+y},\qquad
 G_a(x,y)=\frac{\max\{1,x(a+y),y(a+x)\}}{a+x+y}.
 ```
 
-The classical metallic thresholds are prior results. The contributions
-considered here are the exact-run refinement of both envelopes, the sharp
-linear inverse estimate, and their cylinder applications. [Sources](Sources.md)
-describes the relationship to the literature; priority is not asserted.
+The classical metallic thresholds and natural-extension geometry are
+prior work. The results presented here concern exact run refinements,
+rectangle optimization, and sharp inverse stability with quantitative
+applications. [Sources.md](Sources.md) records the literature and access
+limitations. Worldwide priority is not asserted.
 
-## Ordinary convergents and the coordinate formulas
+## Ordinary convergents and the coordinate bridge
 
-Use $p_{-1}=1,q_{-1}=0,p_0=a_0,q_0=1$. The ordinary continuant
-recurrences and determinant identity give
+The ordinary continuant recurrences and determinant identity give
 
 ```math
 p_{i+1}=a_{i+1}p_i+p_{i-1},\quad
 q_{i+1}=a_{i+1}q_i+q_{i-1},\quad
-p_iq_{i-1}-p_{i-1}q_i=(-1)^{i-1}.
+p_iq_{i-1}-p_{i-1}q_i=(-1)^{i-1},
 ```
 
-The complete quotient at position $n+1$ is $a+y$, so
+with $p_{-1}=1,q_{-1}=0,p_0=a_0,q_0=1$. The complete quotient at
+position $n+2$ is $a+y$, so
 
 ```math
-\alpha=\frac{p_n(a+y)+p_{n-1}}{q_n(a+y)+q_{n-1}}.
+\alpha=\frac{p_{n+1}(a+y)+p_n}{q_{n+1}(a+y)+q_n}.
 ```
 
-Subtracting the three consecutive convergents, taking absolute values,
-and using the determinant identity yields
+Subtract the three consecutive convergents and use the determinant
+identity. Their actual approximation coefficients satisfy
 
 ```math
-(\Theta_{n-1},\Theta_n,\Theta_{n+1})
-=\frac{(x(a+y),1,y(a+x))}{a+x+y}.                       \tag{1}
+(\Theta_n,\Theta_{n+1},\Theta_{n+2})
+=\frac{(x(a+y),1,y(a+x))}{a+x+y}.                         \tag{1}
 ```
 
-Consequently their minimum is $F_a(x,y)$ and their maximum is $G_a(x,y)$.
-These identities refer to the actual convergents of $\alpha$. An arbitrary
-unimodular pair bracketing $\alpha$, with an arbitrarily assigned next
-digit, need not satisfy the required error recurrence.
+Their minimum and maximum are therefore $F_a(x,y)$ and $G_a(x,y)$.
+In Lean, the numerators and denominators come from Mathlib's continued
+fraction of the real input; the digits come from the floor/fraction
+algorithm. Equation (1) is proved from these definitions.
 
-## Exact optimization on a rectangle
+## Exact optimization on every closed rectangle
 
-For this section it is enough that $a\ge1$ is real. Put
-$R=[\ell_x,u_x]\times[\ell_y,u_y]\subseteq[0,1]^2$, and
+Here $a\ge1$ may be real. Let
+$R=[\ell_x,u_x]\times[\ell_y,u_y]\subseteq[0,1]^2$, with either interval
+possibly a singleton. Put
 
 ```math
-Q(x,y)=\min\{x(a+y),y(a+x)\},\quad
+Q(x,y)=\min\{x(a+y),y(a+x)\},\qquad
 P(x,y)=\max\{x(a+y),y(a+x)\}.
 ```
 
-Let $\operatorname{clip}(z;L,U)=\min\{U,\max\{L,z\}\}$.
-For $t>0$, set
+Write $\operatorname{clip}(z;L,U)=\min\{U,\max\{L,z\}\}$. Define
 
 ```math
-h(t)=\max\{1/t-a,1/(a+t)\},\quad
-k(t)=\max\{0,\min\{1/t-a,1/(a+t)\}\},\quad k(0)=1/a.
+h(t)=\max\{1/t-a,1/(a+t)\}\quad(t>0),
 ```
 
-The maximum of $F_a$ on $R$ is computed as follows.
-
-1. If $u_xu_y=0$, the function is identically zero on $R$.
-2. Otherwise, if $Q(u_x,u_y)\le1$, its unique maximizer is $(u_x,u_y)$.
-3. Otherwise, if $Q(\ell_x,\ell_y)\ge1$, its unique maximizer is
-   $(\ell_x,\ell_y)$.
-4. In the remaining case let
-   $L=\max\{\ell_x,h(u_y)\}$ and $U=\min\{u_x,h(\ell_y)\}$.
-   If $\ell_y=0$, use $U=u_x$. Then $0<L\le U\le1$, and the unique
-   maximizer is $(x_*,h(x_*))$ for $x_*=\operatorname{clip}(\beta_a;L,U)$.
-
-The minimum of $G_a$ is always unique. If $P(u_x,u_y)\le1$, its
-minimizer is $(u_x,u_y)$; otherwise, if $P(\ell_x,\ell_y)\ge1$, it is
-$(\ell_x,\ell_y)$. In the remaining case put
+and, on nonnegative arguments,
 
 ```math
-L=\max\{\ell_x,k(u_y)\},\quad U=\min\{u_x,k(\ell_y)\}.
+k(t)=\begin{cases}
+1/(a+t),&0\le t\le\beta_a,\\
+\max\{0,1/t-a\},&t>\beta_a.
+\end{cases}
 ```
 
-Then $0\le L\le U\le1/a$, and the minimizer is
-$(x_*,k(x_*))$, where $x_*=\operatorname{clip}(\beta_a;L,U)$.
-At either crossing-curve extremizer the objective equals $1/(a+x_*+y_*)$.
+Equivalently, $k(0)=1/a$ and
+$k(t)=\max\{0,\min\{1/t-a,1/(a+t)\}\}$ for $t>0$.
 
-To prove the formulas, note that the two side fractions in (1) increase
-strictly in either positive coordinate, while the central fraction decreases.
-For example, their relevant difference quotients have the same signs as
-$(a+y)^2$ and $x^2$, with positive denominators. Thus any positive
-maximizer of $F_a$ in the crossing case lies on $Q=1$. This curve is
-$y=h(x)$: its branches are $1/x-a$ below $\beta_a$ and $1/(a+x)$ above
-$\beta_a$. The function $h$ is a decreasing involution on positive reals.
-Along the curve, $x+h(x)$ strictly decreases up to $\beta_a$ and strictly
-increases afterwards. This proves the clipping formula and uniqueness.
-Axis points have value zero and cannot maximize a rectangle with positive
-upper coordinates.
+The maximum $C(R)=\max_R F_a$ and all its maximizers are as follows.
 
-For $G_a$, move toward the appropriate corner until reaching $P=1$.
-This curve is $y=k(x)$ for $0\le x\le1/a$, a decreasing involution on
-that interval. Along it, $x+k(x)$ strictly increases up to $\beta_a$ and
-strictly decreases afterwards. Minimizing $1/(a+x+k(x))$ therefore gives
-the same clipping rule. The monotonicity extends to the axes: above
-$P=1$ the active side coefficient has positive variation in either
-coordinate. Degenerate rectangles obey the same statements.
+1. If $u_xu_y=0$, then $F_a=0$ throughout $R$ and every point maximizes.
+2. Otherwise, if $Q(u_x,u_y)\le1$, the unique maximizer is $(u_x,u_y)$
+   and $C(R)=Q(u_x,u_y)/(a+u_x+u_y)$.
+3. Otherwise, if $Q(\ell_x,\ell_y)\ge1$, the unique maximizer is
+   $(\ell_x,\ell_y)$ and $C(R)=1/(a+\ell_x+\ell_y)$.
+4. Otherwise set $L=\max\{\ell_x,h(u_y)\}$ and
+   $U=\min\{u_x,h(\ell_y)\}$. When $\ell_y=0$, use $U=u_x$.
+   Then $0<L\le U\le1$. The unique maximizer is
+   $(x_*,y_*)=(\operatorname{clip}(\beta_a;L,U),h(x_*))$, and
+   $C(R)=1/(a+x_*+y_*)$.
 
-Taking $R=[0,1]^2$ proves
+The minimum $U(R)=\min_R G_a$ is always unique.
+
+1. If $P(u_x,u_y)\le1$, its minimizer is $(u_x,u_y)$ and
+   $U(R)=1/(a+u_x+u_y)$.
+2. Otherwise, if $P(\ell_x,\ell_y)\ge1$, its minimizer is
+   $(\ell_x,\ell_y)$ and
+   $U(R)=P(\ell_x,\ell_y)/(a+\ell_x+\ell_y)$.
+3. Otherwise set $L=\max\{\ell_x,k(u_y)\}$ and
+   $U=\min\{u_x,k(\ell_y)\}$. Then $0\le L\le U\le1/a$.
+   The minimizer is
+   $(x_*,y_*)=(\operatorname{clip}(\beta_a;L,U),k(x_*))$, and
+   $U(R)=1/(a+x_*+y_*)$.
+
+These formulas include line segments, singletons, and rectangles meeting
+an axis. The lower formula never needs to assign a finite value to $h(0)$.
+
+An algebraic proof starts with the four universal bounds
+
+```math
+F_a(t,u)\le\frac{t}{1+t^2},\quad
+F_a(t,u)\le\frac{a+t}{1+(a+t)^2},\quad
+G_a(t,u)\ge\frac{t}{1+t^2},\quad
+G_a(t,u)\ge\frac{a+t}{1+(a+t)^2}.                       \tag{2}
+```
+
+They follow by splitting at $t(a+u)=1$ or $u(a+t)=1$ and clearing
+positive denominators. Equality in each comparison, when its numerator
+coordinate is positive, forces the corresponding product to equal one.
+The function $t/(1+t^2)$ strictly increases on $[0,1]$ and strictly
+decreases on $[1,\infty)$.
+
+The lower switching curve $Q=1$ is $y=h(x)$, a decreasing involution
+on positive reals. The upper switching curve $P=1$ is $y=k(x)$ for
+$0\le x\le1/a$, also a decreasing involution on that interval.
+The displayed $L,U$ are exactly their feasible first-coordinate ranges.
+Clipping either selects the metallic point or an edge facing that point.
+At such an edge, one of (2), together with its strict one-variable
+monotonicity, bounds every point in the rectangle and forces the stated
+unique equality point. In the noncrossing cases the two side fractions
+increase coordinatewise and the central fraction decreases, giving the
+indicated corner. This also proves the axis exception for $F_a$.
+
+In particular,
 
 ```math
 F_a(x,y)\le c_a\le G_a(x,y),
 ```
 
-with equality in either inequality exactly at $(\beta_a,\beta_a)$.
+and either equality holds exactly at $(\beta_a,\beta_a)$. Consequently
+
+```math
+C(R)=c_a\iff(\beta_a,\beta_a)\in R\iff U(R)=c_a.
+```
+
+A rectangle excluding that point satisfies $C(R)<c_a<U(R)$.
+Four corners do not suffice for arbitrary rectangles: on $[0,1]^2$,
+$F_2(1/2,1/2)=1/3$ exceeds every corner value, while
+$G_2(1/2,1/2)=5/12$ is below every corner value.
 
 ## Four corners for every exact run
 
-For an integer $a\ge2$ and natural $r$, define sorted image intervals
+For real $a>1$ and every natural $r$, form sorted image intervals
 
 ```math
 I_r^L=T_a^r([1/a,1]),\qquad I_r^H=T_a^r([0,1/(a+1)]).
 ```
 
-The superscript $L$ means that the first departing digit is less than
-$a$; $H$ means it is greater. For $R=I_r^e\times I_s^f$, let $V(R)$
-be its four corners. Define
+For integer $a\ge2$, $L$ means that the first departing digit is less
+than $a$ and $H$ that it is greater. Let $R=I_r^e\times I_s^f$ and
+let $V(R)$ be its four corners. Then
 
 ```math
-C_{a;r,s}^{e,f}=\max_{v\in V(R)}F_a(v),\qquad
-U_{a;r,s}^{e,f}=\min_{v\in V(R)}G_a(v).                  \tag{2}
+C_{a;r,s}^{e,f}=\max_{v\in V(R)}F_a(v)=\max_R F_a,\qquad
+U_{a;r,s}^{e,f}=\min_{v\in V(R)}G_a(v)=\min_R G_a.       \tag{3}
 ```
 
-Both constants are rational. Each is the corresponding extremum over
-the whole rectangle and has a unique extremizing corner. Furthermore,
+Each extremizer is a unique corner, and
+$C_{a;r,s}^{e,f}<c_a<U_{a;r,s}^{e,f}$. The constants are rational when
+$a$ is rational, in particular for every integer central digit.
 
-```math
-C_{a;r,s}^{e,f}<c_a<U_{a;r,s}^{e,f}.                    \tag{3}
-```
-
-Here is the structural proof, which has no cutoff on $r$ or $s$.
-Let $K_r=T_a^r([0,1])$. These intervals are nested, and
+To see why all run lengths are covered, put $K_r=T_a^r([0,1])$.
+These intervals are nested, and
 
 ```math
 K_r\setminus\operatorname{int}(K_{r+1})=I_r^L\cup I_r^H.
 ```
 
-The map $T_a^r$ is strictly monotone. Distinct run cells therefore meet
-only at shared endpoints; every cell excludes $\beta_a$, which lies in
-the interior of every $K_r$. Also $T_a(I_s^f)=I_{s+1}^f$.
+Strict monotonicity of $T_a^r$ implies that distinct run cells meet only
+at common endpoints. Each run cell lies strictly on one side of
+$\beta_a$, and $T_a(I_s^f)=I_{s+1}^f$. Thus a run cell and the image
+of the other coordinate's cell are either ordered or have matching
+endpoints. The switching curves $x=T_a(y)$ and $y=T_a(x)$ consequently
+meet the rectangle only at corners or in a segment joining opposite
+corners. Along a matching segment the objective is strictly monotone,
+since the interval excludes $\beta_a$. The rectangle theorem gives (3)
+and uniqueness without a cutoff or parity table.
 
-The rectangle formulas place an extremum at a corner unless it lies on
-one of the curves $x=T_a(y)$ or $y=T_a(x)$. On the first curve, its
-possible first coordinates lie in $I_r^e\cap I_{s+1}^f$. If these cells
-differ, every intersection is a shared endpoint and the point is a
-corner. If they coincide, the curve joins opposite corners. It lies
-strictly on one side of the metallic point, so the relevant objective
-is strictly monotone along it and its extremum is an endpoint. Exchange
-the coordinates to treat the second curve. Uniqueness and (3) follow
-from the rectangle theorem.
-
-For exact computation set $P_{-1}=1,P_0=0$ and
+For exact endpoint arithmetic, let $P_{-1}=1,P_0=0$ and
 $P_{j+1}=aP_j+P_{j-1}$. Induction gives
 
 ```math
 T_a^r(t)=\frac{P_{r-1}t+P_r}{P_rt+P_{r+1}}.             \tag{4}
 ```
 
-Evaluate (4) at $0,1/(a+1),1/a,1$, sort the endpoint pairs, and perform
-the four evaluations in (2). For a central digit $2$ with immediate
-departures, the resulting constants are:
+Evaluate at $0,1/(a+1),1/a,1$, sort the endpoint pairs, and use (3).
+For the silver digit, immediate departures give:
 
 | Departure digits | $C$ | $U$ |
 | --- | --- | --- |
@@ -192,148 +219,150 @@ departures, the resulting constants are:
 | $1,\ge3$, or reversed | $3/10$ | $2/5$ |
 | $\ge3,\ge3$ | $7/24$ | $3/8$ |
 
-## Realization, strictness, and sharpness
+With one adjacent silver digit on each side followed by low and high
+departures, the constants are $10/29$ and $21/58$.
 
-Before applying $T_a^r$, the possible finite past coordinates are
-$\mathbb Q\cap[1/a,1]$ for type $L$ and
-$\mathbb Q\cap(0,1/(a+1)]$ for type $H$. The possible infinite future
-coordinates are exactly the irrational points in the corresponding
-open intervals. The endpoint $1/a$ belongs to the low-departure finite
-past class through $[0;a-1,1]$. Requiring a canonical reversed finite
-expansion would incorrectly remove it.
+## Actual digits, strict bounds, and optimality
 
-Every interior rational has a finite positive-digit expansion. Reversing
-its digit word gives an ordinary finite past. Every interior irrational
-has an infinite positive-digit expansion. The past and future words
-can be chosen independently on opposite sides of the central digit.
-The fractional-linear reconstruction used in (1) combines them into an
-actual irrational input. Rationals and irrationals are dense in their
-respective intervals, and these fractional-linear maps are continuous.
+An exact past run has $r\le n$, with
+$a_{n+1-i}=a$ for $0\le i<r$, followed by the positive departing digit
+$a_{n+1-r}$. An exact future run has $a_{n+3+i}=a$ for $0\le i<s$,
+followed by $a_{n+3+s}$. Each departing digit is on its specified strict
+side of $a$. An exhausted past and an infinite constant future are
+separate boundary classes.
 
-It follows that every actual triple in a terminated run class satisfies
+The actual tails lie in the respective closed run cells. Every actual
+triple in such a terminated class satisfies
 
 ```math
-\min(\Theta_{n-1},\Theta_n,\Theta_{n+1})
+\min(\Theta_n,\Theta_{n+1},\Theta_{n+2})
  < C_{a;r,s}^{e,f}<c_a<U_{a;r,s}^{e,f}
- <\max(\Theta_{n-1},\Theta_n,\Theta_{n+1}).               \tag{5}
+ <\max(\Theta_n,\Theta_{n+1},\Theta_{n+2}).              \tag{5}
 ```
 
-The first constant is the exact supremum, and the second the exact
-infimum. For every positive $\epsilon$, there is an actual triple in
-the same class within $\epsilon$ of either bound. The two approaching
-sequences need not be the same. The finite index may vary. This is not
-optimality for an independently prescribed index.
+The first constant is the exact supremum and the second the exact
+infimum over actual irrational inputs in that class. For every
+$\epsilon>0$, admissible triples approach each constant within
+$\epsilon$. The finite index may vary; this does not assert optimality
+at an independently prescribed index.
 
-Strictness follows because each unique extremizing corner has rational
-future coordinate, while an actual infinite future is irrational.
-Density and continuity prove sharpness. More generally, finite digit
-words produce rational-endpoint cylinders, to which the full rectangle
-formulas apply. Four corners alone do not optimize arbitrary rectangles.
+Here is an explicit realization argument. Before the constant run is
+prefixed, the endpoint tails can be reached or approached by the
+following positive digit words. Every future word is completed with
+the irrational tail $[0;\overline2]$.
 
-## Sharp global linear inverse stability
+| Departure and endpoint | Reversed finite-past word | Future prefix as $N\to\infty$ |
+| --- | --- | --- |
+| $L$, $1/a$ | $[a-1,1]$ | $[a-1,1,N+1]$ |
+| $L$, $1$ | $[1]$ | $[1,N+1]$ |
+| $H$, $0$ | $[a+N+1]$ | $[a+N+1]$ |
+| $H$, $1/(a+1)$ | $[a+1]$ | $[a+1,N+1]$ |
 
-For every real $a\ge2$, put
+Prefix the requisite copies of $a$, reverse the finite-past word into
+chronological order, insert the central digit, and append the chosen
+irrational future. The floor/fraction algorithm recovers the prescribed
+words. Continuity of the fractional-linear maps and (1) proves convergence
+to every corner and hence sharpness. In particular the low finite-past
+endpoint $1/a=[0;a-1,1]$ is retained; canonicalizing the reversed word
+would incorrectly remove it. All extremizing future corners are rational,
+so the actual irrational futures never attain (5)'s outer constants.
+
+## Optimal global inverse stability
+
+For every real $a\ge2$, set
 
 ```math
-\kappa_a=\frac{c_a(a+1-\beta_a)}{1+(a+1)^2}.
+\kappa_a=\frac{c_a(a+1-\beta_a)}{1+(a+1)^2}>0.
 ```
 
-On the entire unit square,
+On the entire closed unit square,
 
 ```math
-c_a-F_a(x,y)\ge\kappa_a
-   \max\{|x-\beta_a|,|y-\beta_a|\}.                    \tag{6}
+c_a-F_a(x,y)\ge\kappa_a\max\{|x-\beta_a|,|y-\beta_a|\}. \tag{6}
 ```
 
-The coefficient is positive and largest possible. Equality holds exactly at
+This coefficient is largest possible. Equality holds exactly at
+$(\beta_a,\beta_a)$, $(1,1/(a+1))$, and $(1/(a+1),1)$.
+For $a=2$, $\kappa_2=(2\sqrt2-1)/20$.
+
+A direct algebraic proof uses (2). Write $\beta=\beta_a$, $c=c_a$,
+and $f(t)=t/(1+t^2)$. Since $0<\beta<1/2$ and
+$c=\beta/(1+\beta^2)$, for $0\le t\le\beta$ one has
 
 ```math
-(\beta_a,\beta_a),\quad (1,1/(a+1)),\quad(1/(a+1),1).
+c-f(t)-c(\beta-t)
+=\frac{(\beta-t)(1-\beta t-\beta-\beta t^2)}
+ {(1+\beta^2)(1+t^2)}\ge0.
 ```
 
-For $a=2$, it equals $(2\sqrt2-1)/20$.
-
-One proof optimizes the second coordinate. With $b=a+1,d=1/b$,
+Moreover $\kappa_a<c$, so this gives a strictly stronger slope at every
+$t<\beta$. For $\beta\le t\le1$, the metallic equation
+$\beta(a+\beta)=1$ gives
 
 ```math
-J(t):=\max_{0\le u\le1}F_a(t,u)=
-\begin{cases}
-bt/(b+t),&0\le t\le d,\\
-t/(1+t^2),&d\le t\le\beta_a,\\
-(a+t)/(1+(a+t)^2),&\beta_a\le t\le1.
-\end{cases}
+c-f(a+t)=c(t-\beta)\frac{a+t-\beta}{1+(a+t)^2}.
 ```
 
-The maximizing second coordinate, for $t>0$, is respectively $1$,
-$1/t-a$, or $1/(a+t)$. The first two branches form an increasing
-concave function. Their slopes at the join decrease, and the final
-left derivative is $B=(1-\beta_a^2)/(1+\beta_a^2)^2$. Hence
+The last fraction is at least its value at $t=1$, because
 
 ```math
-\frac{c_a-J(t)}{\beta_a-t}\ge B\quad (t<\beta_a).
+\frac{a+t-\beta}{1+(a+t)^2}-\frac{a+1-\beta}{1+(a+1)^2}
+=\frac{(1-t)H(t)}{(1+(a+t)^2)(1+(a+1)^2)},
 ```
 
-For $t>\beta_a$, set $\gamma=a+\beta_a=1/\beta_a$ and $z=a+t$.
-Then
+where
+$H(t)=(a+1-\beta)(t-\beta)+a(a+1)-2>0$.
+The comparison is strict for $t<1$. Choose the coordinate realizing
+$\max\{|x-\beta|,|y-\beta|\}$ and apply the relevant bound in (2).
+This proves (6). Away from the metallic point, equality forces that
+coordinate to be $1$. Equality in its rational-envelope comparison then
+forces the other coordinate to be $1/(a+1)$. These two boundary points
+also prove coefficient optimality.
 
-```math
-\frac{c_a-J(t)}{t-\beta_a}
-=\frac{\gamma z-1}{(1+\gamma^2)(1+z^2)}=:R(z).
-```
+For integer $a\ge2$, actual triples satisfy (6) strictly. Their past is
+rational and cannot equal $\beta_a$; the two other equality points have
+rational future. The coefficient nevertheless remains optimal for actual
+triples: take $[0;1,a,a+1,N,\overline2]$ with triple index $n=0$.
+Its past is $1$ and its future tends to $1/(a+1)$, so the ratio of
+deficit to distance tends to $\kappa_a$.
 
-This decreases strictly for $z\ge\gamma$: its derivative has numerator
-$\gamma(1-z^2)+2z$, which is negative there since
-$\gamma\ge1+\sqrt2>\sqrt3$. Thus $R(z)\ge R(a+1)=\kappa_a$,
-with equality precisely when $t=1$. Also
-$0<\kappa_a<R(\gamma)=\beta_a^2B<B$.
+## Fixed pasts and constant-future boundaries
 
-Choose the coordinate realizing the maximum distance from $\beta_a$.
-The corresponding secant estimate proves (6). Equality away from the
-metallic point forces that coordinate to be $1$ and the other to be
-its unique optimizer $1/(a+1)$. These equality points prove optimality.
+A prescribed nonempty positive chronological word $w$ fixes the entire
+finite past $x=[0;w^{\mathrm{rev}}]$ and the triple index $|w|-1$.
+Use the singleton first interval in the rectangle theorem. Over a
+terminated future cell the two optimizing futures are rational. Both
+actual inequalities are strict, and both constants are approached while
+the whole word and its index remain fixed. This fixed-word result is
+separate from the varying-index sharpness in (5).
 
-There is also a purely algebraic proof: compare $F_a(t,u)$ to
-$t/(1+t^2)$ and $(a+t)/(1+(a+t)^2)$ by splitting at the two switching
-curves, then clear positive denominators in the corresponding secant
-inequalities. This avoids differentiation without changing the statement.
+If all $n+1$ past digits equal $a$, then $x=T_a^{n+1}(0)$.
+If all future digits after the central one equal $a$, then $y=\beta_a$;
+the converse holds as well. Over a terminated past cell and this infinite
+constant future, both extrema occur at the endpoint nearest $\beta_a$.
+The endpoint is $T_a^r(1/a)$ for type $L$, attained by
+$[0;1,a-1,\overline a]$ at triple index $r+1$. For type $H$ it is
+$T_a^r(1/(a+1))$, attained by $[0;a+1,\overline a]$ at index $r$.
+These are genuine irrational equality examples.
 
-For integer $a\ge2$, equality is impossible for an actual triple: the
-metallic past is irrational, and the other equality points have rational
-future. Nevertheless the coefficient remains optimal for actual triples.
-Take $[0;1,a,a+1,N,\overline2]$ at index $n=1$. Its past is $1$, and
-its irrational future tends to $1/(a+1)$ as $N\to\infty$. The ratio
-of deficit to distance tends to $\kappa_a$ by continuity.
-
-## Boundary cases
-
-If the entire finite past is fixed, use the singleton first interval in
-the rectangle theorem. For positive rational past and rational-endpoint
-future cylinder, the unique optimizing future is rational, so both
-actual inequalities remain strict and sharp.
-
-An exhausted all-$a$ past is $x=T_a^n(0)$. An infinite all-$a$ future is
-$y=\beta_a$. In the latter case, both extrema over a terminated past
-cell occur at its endpoint nearest $\beta_a$, and equality can be
-attained. For type $L$, the endpoint is $T_a^r(1/a)$, realized by
-$[0;1,a-1,\overline a]$ at index $n=r+2$. For type $H$, it is
-$T_a^r(1/(a+1))$, realized by $[0;a+1,\overline a]$ at $n=r+1$.
-These observations distinguish an infinite constant future from a
-terminated future.
-
-For $[a_0;\overline a]$, the individual coefficients are
+For the fully constant input $\alpha=\beta_a=[0;\overline a]$,
 
 ```math
 \Theta_k=c_a\bigl(1-(-1)^{k+1}\beta_a^{2k+2}\bigr),\qquad k\ge0.
 ```
 
-The three-term minimum, for $n\ge1$, is $c_a(1-\beta_a^{2n+2})$
-when $n$ is odd and $c_a(1-\beta_a^{2n})$ when $n$ is even. The
-maximum is $c_a(1+\beta_a^{2n})$ for odd $n$ and
-$c_a(1+\beta_a^{2n+2})$ for even $n$. Thus finite-index inequalities
-are strict and both bounds tend to the metallic threshold.
-The optional empty past $n=0$ has $\Theta_{-1}=0$ and is excluded
-from (5).
+The triple minimum and maximum are therefore
 
-The applications and explicit quantitative estimates are in
-[Applications.md](Applications.md). Formal coverage and reproducible
-verification are identified separately in [Verification.md](Verification.md).
+| Triple index | Minimum | Maximum |
+| --- | --- | --- |
+| $n=2j$ | $c_a(1-\beta_a^{4j+4})$ | $c_a(1+\beta_a^{4j+2})$ |
+| $n=2j+1$ | $c_a(1-\beta_a^{4j+4})$ | $c_a(1+\beta_a^{4j+6})$ |
+
+Both inequalities against $c_a$ are strict at finite indices, and both
+sequences converge to $c_a$. An optional empty-past convention with a
+coefficient $\Theta_{-1}=0$ is outside the ordinary triples used here.
+
+[Applications.md](Applications.md) gives localization, effective
+convergence, and the actual digit-window theorem.
+[Verification.md](Verification.md) identifies the formal contracts and
+reproducible checks.

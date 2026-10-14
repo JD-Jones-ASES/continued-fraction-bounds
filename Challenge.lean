@@ -12,6 +12,7 @@ this finite index to vary. Rational future corners are limiting values.
 
 @[expose] public section
 namespace ContinuedFractionBounds
+open Filter
 
 /-- Minimum of the three rational approximation-coefficient expressions. -/
 noncomputable def lower (a x y : ℝ) : ℝ :=
@@ -133,14 +134,134 @@ def ExactFutureRun (α : ℝ) (n : ℕ) (a : ℤ) (s : ℕ) (e : Departure) : Pr
     DigitDeparture a (digit α (n+3+s)) e
 
 /-- Rational graph obtained by solving a side-coefficient level inequality. -/
-@[expose] noncomputable def levelBoundary (a t z : ℝ) : ℝ :=
+noncomputable def levelBoundary (a t z : ℝ) : ℝ :=
   t * (a + z) / (a + z - t)
 
-theorem convergent_eq (α : ℝ) (n : ℕ) :
-    numerator α n / denominator α n = (α.convergent n : ℝ) :=
-  Real.convs_eq_convergent α n
+/-- Evaluate a single positive digit before its remaining tail. -/
+noncomputable def prependDigit (b : ℤ) (t : ℝ) : ℝ := ((b : ℝ) + t)⁻¹
 
-theorem past_rational (α : ℝ) (n : ℕ) : ∃ r : ℚ, past α n = r := by
+/-- Evaluate a finite literal digit word, retaining terminal one. -/
+noncomputable def prependWord : List ℤ → ℝ → ℝ
+  | [], t => t
+  | b :: bs, t => prependDigit b (prependWord bs t)
+
+/-- Every digit in the prescribed finite word is positive. -/
+def PositiveWord (w : List ℤ) : Prop := ∀ b ∈ w, 1 ≤ b
+
+/-- Closed cylinder for at least r constant digits. -/
+def constantCell (a : ℝ) (r : ℕ) : Set ℝ := tailIter a r '' Set.Icc (0 : ℝ) 1
+
+/-- Lower endpoint of the constant-prefix cylinder. -/
+noncomputable def constantLower (a : ℝ) (r : ℕ) : ℝ :=
+  min (tailIter a r 0) (tailIter a r 1)
+
+/-- Upper endpoint of the constant-prefix cylinder. -/
+noncomputable def constantUpper (a : ℝ) (r : ℕ) : ℝ :=
+  max (tailIter a r 0) (tailIter a r 1)
+
+/-- Lower-envelope switching involution on positive arguments. -/
+noncomputable def lowerSwitch (a t : ℝ) : ℝ := max (1 / t - a) (1 / (a + t))
+
+/-- Upper-envelope switching curve, extended by zero. -/
+noncomputable def upperSwitch (a t : ℝ) : ℝ :=
+  if t ≤ metallic a then 1 / (a + t) else max 0 (1 / t - a)
+
+/-- Clip a proposed coordinate to a closed interval. -/
+noncomputable def clip (z L U : ℝ) := min U (max L z)
+
+/-- Lower end of the feasible lower switching segment. -/
+noncomputable def lowerClipLeft (a lx uy : ℝ) := max lx (lowerSwitch a uy)
+
+/-- Upper end of that segment, including a zero lower edge. -/
+noncomputable def lowerClipRight (a ux ly : ℝ) :=
+  if ly = 0 then ux else min ux (lowerSwitch a ly)
+
+/-- Clip the metallic coordinate to the feasible lower switching segment. -/
+noncomputable def lowerClipX (a lx ux ly uy : ℝ) :=
+  clip (metallic a) (lowerClipLeft a lx uy) (lowerClipRight a ux ly)
+
+/-- Matching second coordinate on the lower switching curve. -/
+noncomputable def lowerClipY (a lx ux ly uy : ℝ) :=
+  lowerSwitch a (lowerClipX a lx ux ly uy)
+
+/-- Exhaustive maximizing first coordinate for every closed rectangle. -/
+noncomputable def lowerRectangleX (a lx ux ly uy : ℝ) :=
+  if ux * uy = 0 then ux
+  else if min (ux * (a + uy)) (uy * (a + ux)) ≤ 1 then ux
+  else if 1 ≤ min (lx * (a + ly)) (ly * (a + lx)) then lx
+  else lowerClipX a lx ux ly uy
+
+/-- Exhaustive maximizing second coordinate for every closed rectangle. -/
+noncomputable def lowerRectangleY (a lx ux ly uy : ℝ) :=
+  if ux * uy = 0 then uy
+  else if min (ux * (a + uy)) (uy * (a + ux)) ≤ 1 then uy
+  else if 1 ≤ min (lx * (a + ly)) (ly * (a + lx)) then ly
+  else lowerClipY a lx ux ly uy
+
+/-- Lower end of the feasible upper switching segment. -/
+noncomputable def upperClipLeft (a lx uy : ℝ) := max lx (upperSwitch a uy)
+
+/-- Upper end of the feasible upper switching segment. -/
+noncomputable def upperClipRight (a ux ly : ℝ) := min ux (upperSwitch a ly)
+
+/-- Clip the metallic coordinate to the feasible upper switching segment. -/
+noncomputable def upperClipX (a lx ux ly uy : ℝ) :=
+  clip (metallic a) (upperClipLeft a lx uy) (upperClipRight a ux ly)
+
+/-- Matching second coordinate on the upper switching curve. -/
+noncomputable def upperClipY (a lx ux ly uy : ℝ) :=
+  upperSwitch a (upperClipX a lx ux ly uy)
+
+/-- Exhaustive minimizing first coordinate for every closed rectangle. -/
+noncomputable def upperRectangleX (a lx ux ly uy : ℝ) :=
+  if max (ux * (a + uy)) (uy * (a + ux)) ≤ 1 then ux
+  else if 1 ≤ max (lx * (a + ly)) (ly * (a + lx)) then lx
+  else upperClipX a lx ux ly uy
+
+/-- Exhaustive minimizing second coordinate for every closed rectangle. -/
+noncomputable def upperRectangleY (a lx ux ly uy : ℝ) :=
+  if max (ux * (a + uy)) (uy * (a + ux)) ≤ 1 then uy
+  else if 1 ≤ max (lx * (a + ly)) (ly * (a + lx)) then ly
+  else upperClipY a lx ux ly uy
+
+/-- Explicit irrational with low departing finite past and constant infinite future. -/
+noncomputable def metallicLowExample (a : ℤ) : ℝ :=
+  prependWord [1,a-1] (metallic (a:ℝ))
+
+/-- Explicit irrational with high departing finite past and constant infinite future. -/
+noncomputable def metallicHighExample (a : ℤ) : ℝ :=
+  prependWord [a+1] (metallic (a:ℝ))
+
+/-- Departure endpoint nearest the metallic fixed point. -/
+noncomputable def metallicNearestTail (a : ℝ) : Departure → ℝ
+  | .low => 1/a
+  | .high => 1/(a+1)
+
+/-- The input has exactly the prescribed initial positive digit word. -/
+def HasInitialWord (α : ℝ) (w : List ℤ) : Prop :=
+  ∀ k, (hk : k < w.length) → digit α (k+1) = w[k]
+
+/-- Finite reversed-past coordinate for the complete prescribed word. -/
+noncomputable def wordPast (w : List ℤ) : ℝ := prependWord w.reverse 0
+
+/-- Exact maximizing future coordinate for a prescribed entire past. -/
+noncomputable def fixedPastLowerY (a : ℝ) (w : List ℤ) (s : ℕ) (e : Departure) : ℝ :=
+  lowerRectangleY a (wordPast w) (wordPast w) (runLower a s e) (runUpper a s e)
+
+/-- Exact minimizing future coordinate for a prescribed entire past. -/
+noncomputable def fixedPastUpperY (a : ℝ) (w : List ℤ) (s : ℕ) (e : Departure) : ℝ :=
+  upperRectangleY a (wordPast w) (wordPast w) (runLower a s e) (runUpper a s e)
+
+/-- Sharp upper bound for the minimum with a fixed entire finite past. -/
+noncomputable def fixedPastLowerBound (a : ℝ) (w : List ℤ) (s : ℕ) (e : Departure) : ℝ :=
+  lower a (wordPast w) (fixedPastLowerY a w s e)
+
+/-- Sharp lower bound for the maximum with a fixed entire finite past. -/
+noncomputable def fixedPastUpperBound (a : ℝ) (w : List ℤ) (s : ℕ) (e : Departure) : ℝ :=
+  upper a (wordPast w) (fixedPastUpperY a w s e)
+
+theorem convergent_eq (α : ℝ) (n : ℕ) :
+    numerator α n / denominator α n = (α.convergent n : ℝ) := by
   sorry
 
 theorem ordinary_convergent_triple {α : ℝ} (hα : Irrational α) (n : ℕ) :
@@ -265,6 +386,278 @@ theorem lower_eq_threshold_iff {a x y : ℝ} (ha : 1 ≤ a)
 theorem upper_eq_threshold_iff {a x y : ℝ} (ha : 1 ≤ a)
     (hx : 0 ≤ x) (hx1 : x ≤ 1) (hy : 0 ≤ y) (hy1 : y ≤ 1) :
     upper a x y = threshold a ↔ x = metallic a ∧ y = metallic a := by
+  sorry
+
+theorem lower_rectangle_maximum {a lx ux ly uy : ℝ} (ha : 1 ≤ a)
+    (hlx : 0 ≤ lx) (hlxu : lx ≤ ux) (hux : ux ≤ 1)
+    (hly : 0 ≤ ly) (hlyu : ly ≤ uy) (huy : uy ≤ 1) :
+    let t := lowerRectangleX a lx ux ly uy
+    let u := lowerRectangleY a lx ux ly uy
+    t ∈ Set.Icc lx ux ∧ u ∈ Set.Icc ly uy ∧
+      ∀ x ∈ Set.Icc lx ux, ∀ y ∈ Set.Icc ly uy,
+        lower a x y ≤ lower a t u ∧
+        (lower a x y = lower a t u ↔ ux * uy = 0 ∨ (x = t ∧ y = u)) := by
+  sorry
+
+theorem upper_rectangle_minimum {a lx ux ly uy : ℝ} (ha : 1 ≤ a)
+    (hlx : 0 ≤ lx) (hlxu : lx ≤ ux) (hux : ux ≤ 1)
+    (hly : 0 ≤ ly) (hlyu : ly ≤ uy) (huy : uy ≤ 1) :
+    let t := upperRectangleX a lx ux ly uy
+    let u := upperRectangleY a lx ux ly uy
+    t ∈ Set.Icc lx ux ∧ u ∈ Set.Icc ly uy ∧
+      ∀ x ∈ Set.Icc lx ux, ∀ y ∈ Set.Icc ly uy,
+        upper a t u ≤ upper a x y ∧
+        (upper a x y = upper a t u ↔ x = t ∧ y = u) := by
+  sorry
+
+theorem lower_rectangle_threshold_iff {a lx ux ly uy : ℝ} (ha : 1 ≤ a)
+    (hlx : 0 ≤ lx) (hlxu : lx ≤ ux) (hux : ux ≤ 1)
+    (hly : 0 ≤ ly) (hlyu : ly ≤ uy) (huy : uy ≤ 1) :
+    lower a (lowerRectangleX a lx ux ly uy) (lowerRectangleY a lx ux ly uy) = threshold a ↔
+      metallic a ∈ Set.Icc lx ux ∧ metallic a ∈ Set.Icc ly uy := by
+  sorry
+
+theorem upper_rectangle_threshold_iff {a lx ux ly uy : ℝ} (ha : 1 ≤ a)
+    (hlx : 0 ≤ lx) (hlxu : lx ≤ ux) (hux : ux ≤ 1)
+    (hly : 0 ≤ ly) (hlyu : ly ≤ uy) (huy : uy ≤ 1) :
+    upper a (upperRectangleX a lx ux ly uy) (upperRectangleY a lx ux ly uy) = threshold a ↔
+      metallic a ∈ Set.Icc lx ux ∧ metallic a ∈ Set.Icc ly uy := by
+  sorry
+
+theorem fixed_word_future_sequences {w : List ℤ} (hw : PositiveWord w) (hwne : w ≠ [])
+    {a : ℤ} (ha : 2 ≤ a) (s : ℕ) (e : Departure) {y : ℝ} (hy : y ∈ runCell a s e) :
+    ∃ α : ℕ → ℝ,
+      (∀ N, Irrational (α N) ∧
+        (∀ k, (hk : k < w.length) → digit (α N) (k+1) = w[k]) ∧
+        digit (α N) (w.length+1) = a ∧ ExactFutureRun (α N) (w.length-1) a s e ∧
+        past (α N) (w.length-1) = prependWord w.reverse 0) ∧
+      Tendsto (fun N => future (α N) (w.length-1)) atTop (nhds y) := by
+  sorry
+
+theorem exhausted_past {α : ℝ} (hα : Irrational α) {a : ℤ} (n : ℕ)
+    (hd : ∀ k, 1 ≤ k → k ≤ n+1 → digit α k = a) :
+    past α n = tailIter a (n+1) 0 := by
+  sorry
+
+theorem metallic_irrational {a : ℤ} (ha : 2 ≤ a) : Irrational (metallic (a : ℝ)) := by
+  sorry
+
+theorem metallic_digits {a : ℤ} (ha : 2 ≤ a) (n : ℕ) :
+    digit (metallic (a:ℝ)) (n+1) = a := by
+  sorry
+
+theorem metallic_theta {a : ℤ} (ha : 2 ≤ a) (k : ℕ) :
+    theta (metallic (a:ℝ)) k =
+      (1 - (-1:ℝ)^(k+1)*(metallic a)^(2*k+2)) / Real.sqrt ((a:ℝ)^2+4) := by
+  sorry
+
+theorem metallic_triple_even {a : ℤ} (ha : 2 ≤ a) (j : ℕ) :
+    minimumTriple (metallic (a:ℝ)) (2*j) =
+      (1-(metallic a)^(4*j+4)) / Real.sqrt ((a:ℝ)^2+4) ∧
+    maximumTriple (metallic (a:ℝ)) (2*j) =
+      (1+(metallic a)^(4*j+2)) / Real.sqrt ((a:ℝ)^2+4) := by
+  sorry
+
+theorem metallic_triple_odd {a : ℤ} (ha : 2 ≤ a) (j : ℕ) :
+    minimumTriple (metallic (a:ℝ)) (2*j+1) =
+      (1-(metallic a)^(4*j+4)) / Real.sqrt ((a:ℝ)^2+4) ∧
+    maximumTriple (metallic (a:ℝ)) (2*j+1) =
+      (1+(metallic a)^(4*j+6)) / Real.sqrt ((a:ℝ)^2+4) := by
+  sorry
+
+theorem metallic_triples_tendsto {a : ℤ} (ha : 2 ≤ a) :
+    Tendsto (minimumTriple (metallic (a:ℝ))) atTop (nhds (threshold (a:ℝ))) ∧
+    Tendsto (maximumTriple (metallic (a:ℝ))) atTop (nhds (threshold (a:ℝ))) := by
+  sorry
+
+theorem metallic_future_run_extrema {a x : ℝ} (ha : 1 < a) (r : ℕ) (e : Departure)
+    (hx : x ∈ runCell a r e) :
+    let z := tailIter a r (metallicNearestTail a e)
+    lower a x (metallic a) ≤ lower a z (metallic a) ∧
+    upper a z (metallic a) ≤ upper a x (metallic a) ∧
+    (lower a x (metallic a) = lower a z (metallic a) ↔ x = z) ∧
+    (upper a x (metallic a) = upper a z (metallic a) ↔ x = z) := by
+  sorry
+
+theorem metallic_low_example_states {a : ℤ} (ha : 2 ≤ a) (r : ℕ) :
+    Irrational (metallicLowExample a) ∧
+    digit (metallicLowExample a) (r+3) = a ∧
+    ExactPastRun (metallicLowExample a) (r+1) a r .low ∧
+    past (metallicLowExample a) (r+1) = tailIter a r (1/(a:ℝ)) ∧
+    future (metallicLowExample a) (r+1) = metallic (a:ℝ) := by
+  sorry
+
+theorem metallic_high_example_states {a : ℤ} (ha : 2 ≤ a) (r : ℕ) :
+    Irrational (metallicHighExample a) ∧
+    digit (metallicHighExample a) (r+2) = a ∧
+    ExactPastRun (metallicHighExample a) r a r .high ∧
+    past (metallicHighExample a) r = tailIter a r (1/((a:ℝ)+1)) ∧
+    future (metallicHighExample a) r = metallic (a:ℝ) := by
+  sorry
+
+theorem metallic_low_example_attains {a : ℤ} (ha : 2 ≤ a) (r : ℕ) :
+    minimumTriple (metallicLowExample a) (r+1) =
+      lower a (tailIter a r (1/(a:ℝ))) (metallic a) ∧
+    maximumTriple (metallicLowExample a) (r+1) =
+      upper a (tailIter a r (1/(a:ℝ))) (metallic a) := by
+  sorry
+
+theorem metallic_high_example_attains {a : ℤ} (ha : 2 ≤ a) (r : ℕ) :
+    minimumTriple (metallicHighExample a) r =
+      lower a (tailIter a r (1/((a:ℝ)+1))) (metallic a) ∧
+    maximumTriple (metallicHighExample a) r =
+      upper a (tailIter a r (1/((a:ℝ)+1))) (metallic a) := by
+  sorry
+
+theorem past_ne_metallic {a : ℤ} (ha : 2 ≤ a) (α : ℝ) (n : ℕ) :
+    past α n ≠ metallic (a:ℝ) := by
+  sorry
+
+theorem infinite_future_iff_metallic {α : ℝ} (hα : Irrational α)
+    {a : ℤ} (ha : 2 ≤ a) (n : ℕ) :
+    (∀ i : ℕ, digit α (n+3+i) = a) ↔ future α n = metallic (a:ℝ) := by
+  sorry
+
+theorem envelopes_lipschitz {a x y u v : ℝ} (ha : 1 ≤ a)
+    (hx : 0 ≤ x) (hy : 0 ≤ y) (hu : 0 ≤ u) (hv : 0 ≤ v) :
+    |lower a x y-lower a u v| ≤ |x-u|+|y-v| ∧
+      |upper a x y-upper a u v| ≤ |x-u|+|y-v| := by
+  sorry
+
+theorem run_constants_convergence {a : ℝ} (ha : 1 < a) (r s : ℕ) (e f : Departure) :
+    0 < threshold a-runLowerBound a r s e f ∧
+      threshold a-runLowerBound a r s e f ≤ (1/a^2)^r+(1/a^2)^s ∧
+      0 < runUpperBound a r s e f-threshold a ∧
+      runUpperBound a r s e f-threshold a ≤ (1/a^2)^r+(1/a^2)^s := by
+  sorry
+
+theorem small_deficit_constant_cell {a x y : ℝ} (ha : 2 ≤ a) (r : ℕ)
+    (hx : 0 ≤ x) (hx1 : x ≤ 1) (hy : 0 ≤ y) (hy1 : y ≤ 1)
+    (hd : threshold a-lower a x y < stabilityConstant a *
+      min (metallic a-constantLower a r) (constantUpper a r-metallic a)) :
+    x ∈ interior (constantCell a r) ∧ y ∈ interior (constantCell a r) := by
+  sorry
+
+theorem small_deficit_digit_window {α : ℝ} {a : ℤ} (hα : Irrational α)
+    (ha : 2 ≤ a) (n r : ℕ) (hd : digit α (n+2)=a)
+    (hdef : threshold a-minimumTriple α n < stabilityConstant a *
+      min (metallic a-constantLower a r) (constantUpper a r-metallic a)) :
+    r < n+1 ∧ (∀ i < r, digit α (n+1-i)=a) ∧
+      (∀ i < r, digit α (n+3+i)=a) := by
+  sorry
+
+theorem silver_one_low_high :
+    runLowerBound 2 1 1 .low .high = 10 / 29 ∧
+      runUpperBound 2 1 1 .low .high = 21 / 58 := by
+  sorry
+
+theorem past_rational (α : ℝ) (n : ℕ) : ∃ r : ℚ, past α n = r := by
+  sorry
+
+theorem future_irrational {α : ℝ} (hα : Irrational α) (n : ℕ) :
+    Irrational (future α n) := by
+  sorry
+
+theorem runCell_shift (a : ℝ) (r : ℕ) (e : Departure) :
+    tailMap a '' runCell a r e = runCell a (r + 1) e := by
+  sorry
+
+theorem runCell_eq_Icc {a : ℝ} (ha : 1 < a) (r : ℕ) (e : Departure) :
+    runCell a r e = Set.Icc (runLower a r e) (runUpper a r e) := by
+  sorry
+
+theorem runCell_interiors_disjoint {a : ℝ} (ha : 1 < a) (r s : ℕ)
+    (e f : Departure) (hdiff : r ≠ s ∨ e ≠ f) :
+    Disjoint (interior (runCell a r e)) (interior (runCell a s f)) := by
+  sorry
+
+theorem metallic_not_mem_runCell {a : ℝ} (ha : 1 < a) (r : ℕ) (e : Departure) :
+    metallic a ∉ runCell a r e := by
+  sorry
+
+theorem fixedPastLower_extremum {a : ℝ} (ha : 1 < a) {w : List ℤ}
+    (hw : PositiveWord w) (hwne : w ≠ []) (s : ℕ) (e : Departure) :
+    fixedPastLowerY a w s e ∈ runCell a s e ∧
+    ∀ y ∈ runCell a s e,
+      lower a (wordPast w) y ≤ fixedPastLowerBound a w s e ∧
+      (lower a (wordPast w) y = fixedPastLowerBound a w s e ↔ y = fixedPastLowerY a w s e) := by
+  sorry
+
+theorem fixedPastUpper_extremum {a : ℝ} (ha : 1 < a) {w : List ℤ}
+    (hw : PositiveWord w) (hwne : w ≠ []) (s : ℕ) (e : Departure) :
+    fixedPastUpperY a w s e ∈ runCell a s e ∧
+    ∀ y ∈ runCell a s e,
+      fixedPastUpperBound a w s e ≤ upper a (wordPast w) y ∧
+      (upper a (wordPast w) y = fixedPastUpperBound a w s e ↔ y = fixedPastUpperY a w s e) := by
+  sorry
+
+theorem fixedPast_bounds_rational {a : ℤ} (ha : 2 ≤ a) {w : List ℤ}
+    (hw : PositiveWord w) (hwne : w ≠ []) (s : ℕ) (e : Departure) :
+    (∃ q : ℚ, fixedPastLowerBound a w s e = q) ∧
+      (∃ q : ℚ, fixedPastUpperBound a w s e = q) := by
+  sorry
+
+theorem fixed_past_bounds {α : ℝ} (hα : Irrational α) {w : List ℤ}
+    (hw : PositiveWord w) (hwne : w ≠ []) (hword : HasInitialWord α w)
+    {a : ℤ} (ha : 2 ≤ a) (s : ℕ) (e : Departure)
+    (hd : digit α (w.length+1) = a) (hf : ExactFutureRun α (w.length-1) a s e) :
+    minimumTriple α (w.length-1) < fixedPastLowerBound a w s e ∧
+      fixedPastUpperBound a w s e < maximumTriple α (w.length-1) := by
+  sorry
+
+theorem fixedPast_bounds_strict_threshold {a : ℤ} (ha : 2 ≤ a) {w : List ℤ}
+    (hw : PositiveWord w) (hwne : w ≠ []) (s : ℕ) (e : Departure) :
+    fixedPastLowerBound a w s e < threshold a ∧
+      threshold a < fixedPastUpperBound a w s e := by
+  sorry
+
+theorem fixed_past_lower_sharp {w : List ℤ} (hw : PositiveWord w) (hwne : w ≠ [])
+    {a : ℤ} (ha : 2 ≤ a) (s : ℕ) (e : Departure) (ε : ℝ) (hε : 0 < ε) :
+    ∃ α : ℝ, Irrational α ∧ HasInitialWord α w ∧ digit α (w.length+1) = a ∧
+      ExactFutureRun α (w.length-1) a s e ∧
+      fixedPastLowerBound a w s e - ε < minimumTriple α (w.length-1) ∧
+      minimumTriple α (w.length-1) < fixedPastLowerBound a w s e := by
+  sorry
+
+theorem fixed_past_upper_sharp {w : List ℤ} (hw : PositiveWord w) (hwne : w ≠ [])
+    {a : ℤ} (ha : 2 ≤ a) (s : ℕ) (e : Departure) (ε : ℝ) (hε : 0 < ε) :
+    ∃ α : ℝ, Irrational α ∧ HasInitialWord α w ∧ digit α (w.length+1) = a ∧
+      ExactFutureRun α (w.length-1) a s e ∧
+      fixedPastUpperBound a w s e < maximumTriple α (w.length-1) ∧
+      maximumTriple α (w.length-1) < fixedPastUpperBound a w s e + ε := by
+  sorry
+
+theorem exhausted_fixed_past_bounds {α : ℝ} (hα : Irrational α) {a : ℤ} (ha : 2 ≤ a)
+    (n s : ℕ) (e : Departure) (hp : ∀ k, 1 ≤ k → k ≤ n+1 → digit α k = a)
+    (hd : digit α (n+2) = a) (hf : ExactFutureRun α n a s e) :
+    minimumTriple α n < fixedPastLowerBound a (List.replicate (n+1) a) s e ∧
+      fixedPastUpperBound a (List.replicate (n+1) a) s e < maximumTriple α n := by
+  sorry
+
+theorem fixed_word_metallic_realization {w : List ℤ} (hw : PositiveWord w) (hwne : w ≠ [])
+    {a : ℤ} (ha : 2 ≤ a) :
+    ∃ α : ℝ, Irrational α ∧ HasInitialWord α w ∧ digit α (w.length+1) = a ∧
+      (∀ i : ℕ, digit α (w.length-1+3+i) = a) ∧
+      minimumTriple α (w.length-1) = lower a (wordPast w) (metallic a) ∧
+      maximumTriple α (w.length-1) = upper a (wordPast w) (metallic a) := by
+  sorry
+
+theorem terminal_one_endpoint (a : ℤ) :
+    prependWord [a-1,1] 0 = 1/(a:ℝ) := by
+  sorry
+
+theorem exactFutureRun_iff_mem {α : ℝ} (hα : Irrational α) {a : ℤ} (ha : 2 ≤ a)
+    (n s : ℕ) (e : Departure) :
+    ExactFutureRun α n a s e ↔ future α n ∈ runCell a s e := by
+  sorry
+
+theorem fixed_word_irrational_future_realization {w : List ℤ}
+    (hw : PositiveWord w) (hwne : w ≠ []) {a : ℤ} (ha : 2 ≤ a)
+    (s : ℕ) (e : Departure) {y : ℝ} (hiy : Irrational y) (hy : y ∈ runCell a s e) :
+    ∃ α : ℝ, Irrational α ∧
+      (∀ k, (hk : k < w.length) → digit α (k+1) = w[k]) ∧
+      digit α (w.length+1) = a ∧ ExactFutureRun α (w.length-1) a s e ∧
+      past α (w.length-1) = prependWord w.reverse 0 ∧ future α (w.length-1) = y := by
   sorry
 
 end ContinuedFractionBounds

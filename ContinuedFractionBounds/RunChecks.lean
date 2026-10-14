@@ -81,4 +81,27 @@ theorem silver_one_high_low :
     silver_one_low_endpoints.2, silver_one_high_endpoints.1,
     silver_one_high_endpoints.2, lower, upper]
 
+/-- Keeping only minimum run lengths leaves the metallic point in every closed cell,
+so the improved lower constant from an exact departure class cannot remain valid. -/
+theorem minimum_run_lower_improvement_fails {a : ℝ} (ha : 1 < a)
+    (r s : ℕ) (e f : Departure) :
+    ¬ (∀ x ∈ constantCell a r, ∀ y ∈ constantCell a s,
+      lower a x y ≤ runLowerBound a r s e f) := by
+  intro hh
+  have h := hh (metallic a) (interior_subset (metallic_mem_constant_interior ha r))
+    (metallic a) (interior_subset (metallic_mem_constant_interior ha s))
+  rw [lower_metallic (by linarith : 0 < a)] at h
+  exact (not_le_of_gt (runBounds_strict_threshold ha r s e f).1) h
+
+/-- The dual exact-run improvement likewise fails if the departure conditions are erased. -/
+theorem minimum_run_upper_improvement_fails {a : ℝ} (ha : 1 < a)
+    (r s : ℕ) (e f : Departure) :
+    ¬ (∀ x ∈ constantCell a r, ∀ y ∈ constantCell a s,
+      runUpperBound a r s e f ≤ upper a x y) := by
+  intro hh
+  have h := hh (metallic a) (interior_subset (metallic_mem_constant_interior ha r))
+    (metallic a) (interior_subset (metallic_mem_constant_interior ha s))
+  rw [upper_metallic] at h
+  exact (not_le_of_gt (runBounds_strict_threshold ha r s e f).2) h
+
 end ContinuedFractionBounds

@@ -5,18 +5,16 @@ by [comparator.json](comparator.json). Its definitions use Mathlib's
 continued fraction of the actual input real number. The Solution imports
 the implementation; it never imports Challenge placeholders.
 
-The compared statements cover the ordinary-convergent bridge, the unique
-four-corner extrema and rational constants, strict actual-run bounds,
-epsilon-sharpness in every exact digit class, global inverse stability,
-its complete equality locus, and optimality both on the square and over
-actual triples. Additional contracts give exact level-set regions,
-near-extremizer localization, classical equality loci, and the silver
-stability coefficient. The finite index may vary in run sharpness.
+The compared statements cover:
 
-The written proof and applications include broader rectangle and boundary
-statements. Only declarations explicitly present in the comparison
-configuration constitute the recorded formal contract. Supporting Lean
-theorems are checked by the package build and the namespace-wide axiom audit.
+- The actual ordinary-convergent bridge, rational finite past, and irrational future.
+- Exact clipping formulas on every closed rectangle for real parameters at least one, including degenerate and zero-axis cases.
+- Run-cell geometry at every length, unique four-corner extrema, strict actual-run bounds, and epsilon-sharpness in every exact digit class.
+- Global inverse stability for every real parameter at least two, all three equality points, and coefficient optimality over both the square and actual triples.
+- Fixed-word future density, fixed-past sharp bounds, exhausted pasts, attained metallic-future boundary examples, and the exact alternating all-constant coefficients.
+- Exact level-set regions, effective convergence of the run constants, and a quantitative deficit condition forcing an actual constant-digit window.
+
+For the two-sided exact-run sharpness the finite index may vary. When the entire finite past is prescribed, the index remains fixed. All declaration names and their independently compared definitions are listed in the comparison configuration. Supporting Lean theorems are checked by the complete build and the namespace-wide axiom audit. The optional empty-past convention and continuant closed forms in the written exposition are not separate compared contracts.
 
 ## Reproduction
 
@@ -43,12 +41,7 @@ stability equality configurations, and five rejected false claims.
 These finite checks have their stated finite scope. The Lean proofs
 establish the unrestricted quantified formal statements.
 
-Four Lean controls compile their correct statements and require a proof
-error for each corrupted version: a chronological coefficient index,
-an increased stability coefficient, an incorrect mixed corner constant,
-and the reversed finite endpoint `[0;1,1]`. The mathematical replays also
-reject corner-only optimization for arbitrary rectangles and replacement
-of exact runs by minimum-run information.
+Ten Lean controls compile their correct statements and require a proof error for each corrupted version. They cover chronological indexing, an increased stability coefficient, an incorrect mixed corner constant, the reversed finite endpoint `[0;1,1]`, exact versus minimum runs, a missing departure, rational-future nonattainment, both arbitrary-rectangle corner failures, and replacement of actual coordinates by disconnected variables. The rational and quadratic replays add fourteen mathematical negative controls.
 
 ## Exact-commit Linux checks
 

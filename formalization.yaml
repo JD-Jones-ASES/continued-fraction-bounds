@@ -2,16 +2,17 @@ version: v0.4
 project:
   name: Sharp continued-fraction bounds from exact digit runs
   description: >-
-    Proves sharp upper bounds for the minimum and lower bounds for the
-    maximum of three consecutive ordinary continued-fraction approximation
-    coefficients, for every integer central digit at least two, every
-    finite exact past and future run length, and both departure sides.
-    The constants are rational four-corner expressions with unique
-    extremizers. Actual irrational inputs satisfy strict inequalities
-    and approach both constants within their prescribed digit classes.
-    A sharp global linear inverse estimate is proved for every real
-    parameter at least two, with its complete three-point equality locus
-    and coefficient optimality over actual ordinary convergents.
+    Proves sharp bounds for both extrema of three consecutive ordinary
+    continued-fraction approximation coefficients. Exact finite runs of
+    every integer central digit at least two have rational four-corner
+    constants, unique coordinate extremizers, strict actual inequalities,
+    and optimality within the prescribed digit classes. The project also
+    proves exact clipping on every closed unit-square rectangle for every
+    real parameter at least one; sharp inverse stability for every real
+    parameter at least two, including its complete equality locus and
+    actual-convergent optimality; fixed-word sharpness at a fixed index;
+    constant-future and exhausted-past boundary results; effective
+    convergence; and an actual constant-digit-window consequence.
   authors: [JD Jones]
   responsible_maintainers: [JD Jones]
   license: MIT
@@ -24,8 +25,8 @@ sources:
     authors: [JD Jones]
     relationship: other
     note: >-
-      This project first presents its exact-run classification and sharp
-      inverse estimate. Proof.md and Applications.md accompany the same
+      This project first presents its exact-run classification, sharp
+      inverse estimate, and accompanying rectangle and quantitative results. Proof.md and Applications.md accompany the same
       development and are not distinct earlier sources. The original-proof
       provenance designation does not assert worldwide priority. Classical
       metallic thresholds and natural-extension geometry are credited below.
@@ -93,16 +94,32 @@ review:
     review or worldwide-priority determination is claimed.
 status:
   scope: >-
-    The compared actual-run statements use the ordinary convergents and
-    actual floor/fract digits of every irrational real input. Sharpness
-    varies the finite index and does not assert optimality at a separately
-    fixed index. The real stability parameter ranges over all a at least two.
-    Formal coverage of additional boundary and rectangle results is
-    specified in Verification.md and the Comparator configuration.
+    The compared contracts use actual ordinary convergents and floor/fract
+    digits of irrational real inputs. Exact-run sharpness allows the finite
+    index to vary. Separate fixed-word sharpness preserves the complete
+    positive finite word and its index. Rectangle optimization covers every
+    real parameter at least one and all closed rectangles in the unit
+    square, including degenerate rectangles and the lower-envelope zero-axis
+    exception. Inverse stability covers every real parameter at least two.
+    Boundary contracts include exhausted finite pasts, the characterization
+    of infinite constant futures, genuine attained metallic-future examples,
+    and exact alternating coefficient formulas. Quantitative contracts give
+    convergence rates and a sufficient deficit threshold for actual digit
+    windows; optimal window thresholds are not asserted. Verification.md
+    and comparator.json specify the complete compared declarations.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: [propext, Classical.choice, Quot.sound]
   main_results:
+    - declaration: ContinuedFractionBounds.ordinary_convergent_triple
+      file: ContinuedFractionBounds/ContinuedFractions.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.lower_rectangle_maximum
+      file: ContinuedFractionBounds/RectangleOptimization.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.upper_rectangle_minimum
+      file: ContinuedFractionBounds/UpperRectangleOptimization.lean
+      comparator_config: comparator.json
     - declaration: ContinuedFractionBounds.actual_run_bounds
       file: ContinuedFractionBounds/ActualRuns.lean
       comparator_config: comparator.json
@@ -115,13 +132,44 @@ status:
     - declaration: ContinuedFractionBounds.global_stability
       file: ContinuedFractionBounds/Stability.lean
       comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.global_stability_eq_iff
+      file: ContinuedFractionBounds/Stability.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.stabilityConstant_optimal
+      file: ContinuedFractionBounds/Stability.lean
+      comparator_config: comparator.json
     - declaration: ContinuedFractionBounds.actual_stabilityConstant_optimal
       file: ContinuedFractionBounds/Applications.lean
       comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.fixed_past_bounds
+      file: ContinuedFractionBounds/FixedPast.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.fixed_past_lower_sharp
+      file: ContinuedFractionBounds/FixedPast.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.fixed_past_upper_sharp
+      file: ContinuedFractionBounds/FixedPast.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.infinite_future_iff_metallic
+      file: ContinuedFractionBounds/MetallicBoundary.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.metallic_future_run_extrema
+      file: ContinuedFractionBounds/MetallicBoundary.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.metallic_theta
+      file: ContinuedFractionBounds/MetallicBoundary.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.run_constants_convergence
+      file: ContinuedFractionBounds/Quantitative.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.small_deficit_digit_window
+      file: ContinuedFractionBounds/DigitWindows.lean
+      comparator_config: comparator.json
 fidelity:
   divergences: >-
-    Lean numbers the triple n,n+1,n+2 and the central digit n+2;
-    the written proof numbers the same triple n-1,n,n+1 for n at least one.
-    Closed run cells include rational endpoints solely to express sharp
-    suprema and infima. Actual infinite futures are irrational, which
-    supplies strictness. Finite reversed expansions ending in one are retained.
+    The written account and Lean both number the triple n,n+1,n+2 and
+    the central digit n+2. Closed run cells include rational endpoints to
+    express sharp suprema and infima. Actual infinite futures are
+    irrational, which supplies strictness in terminated future classes.
+    Finite reversed expansions ending in one are retained. The optional
+    empty-past convention is outside the ordinary triples formalized here.

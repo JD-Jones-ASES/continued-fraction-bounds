@@ -1,68 +1,80 @@
 # Quantitative applications
 
-Use the notation of [Proof.md](Proof.md). All statements below concern
-ordinary continued fractions or their explicitly defined tail coordinates.
-The exact list of Lean contracts is recorded in [Verification.md](Verification.md).
+Use the notation and indexing of [Proof.md](Proof.md): the triple is
+$(\Theta_n,\Theta_{n+1},\Theta_{n+2})$, with central digit $a_{n+2}=a$,
+finite past $x=q_n/q_{n+1}$, and infinite future
+$y=[0;a_{n+3},a_{n+4},\ldots]$.
 
 ## Localization from a measured deficit
 
-For real $a\ge2$ and $x,y\in[0,1]$, put
-$D=c_a-F_a(x,y)$. The sharp inverse theorem gives
+For real $a\ge2$ and $x,y\in[0,1]$, set $D=c_a-F_a(x,y)$.
+The sharp inverse theorem gives
 
 ```math
 \max\{|x-\beta_a|,|y-\beta_a|\}\le D/\kappa_a.
 ```
 
-In particular, $F_a(x,y)\ge c_a-\epsilon$ implies that both coordinates
-lie in the closed interval
+Thus $F_a(x,y)\ge c_a-\epsilon$ places both coordinates in
 $[\beta_a-\epsilon/\kappa_a,\beta_a+\epsilon/\kappa_a]$.
-The constant is uniform over the unit square and every integer central digit.
-For actual irrational inputs the inequality in the inverse theorem is strict.
+The coefficient is uniform over the full square and is optimal.
+Actual irrational triples satisfy the inverse estimate strictly.
 
-More generally, suppose $L<\beta_a<U$ and
-$D<\kappa_a\min\{\beta_a-L,U-\beta_a\}$.
-Then both $x$ and $y$ belong to $(L,U)$. This gives an effective way to
-infer digit information from three approximation coefficients.
+More generally, for $L<\beta_a<U$, the condition
 
-## A small deficit forces a long constant-digit window
+```math
+D<\kappa_a\min\{\beta_a-L,U-\beta_a\}
+```
+
+puts both coordinates in $(L,U)$. This transfers a deficit in three
+approximation coefficients into information about each tail separately.
+
+## A small deficit forces an actual constant-digit window
 
 Let $a\ge2$ be an integer and $r\ge0$. Sort the endpoints of
-$K_r=T_a^r([0,1])$ as $L_r<U_r$, and define
+$K_r=T_a^r([0,1])$ as $L_r<U_r$ and define
 
 ```math
 \delta_r=\min\{\beta_a-L_r,U_r-\beta_a\}>0.
 ```
 
-For an actual triple with central digit $a$, if
+For every irrational input with central digit $a_{n+2}=a$, if
 
 ```math
-c_a-\min(\Theta_{n-1},\Theta_n,\Theta_{n+1})
+c_a-\min(\Theta_n,\Theta_{n+1},\Theta_{n+2})
  <\kappa_a\delta_r,
 ```
 
-then the $r$ digits immediately before and the $r$ digits immediately
-after the central digit are all $a$. In particular $n\ge r$.
+then
 
-Indeed, the inverse theorem places both coordinates in the interior of
-$K_r$. The open interval $T_a((0,1))=(1/(a+1),1/a)$ consists precisely
-of tails whose first digit is $a$ and whose remainder is in $(0,1)$.
-Repeatedly invert $T_a$ to recover $r$ such digits. A finite tail that
-exhausts earlier has remainder zero and lies on a boundary, so cannot
-occur under the strict deficit condition. The reversed finite expansion
-is used as actually given; no canonicalization at a terminal digit $1$
-is imposed.
+```math
+r<n+1\ \text{(equivalently }r\le n\text{)},\qquad
+a_{n+1-i}=a\ (0\le i<r),\qquad
+a_{n+3+i}=a\ (0\le i<r).                              \tag{1}
+```
 
-The threshold is explicit. With the continuants from (4),
+This is a statement about the actual floor/fraction digits, including
+the finite-past length condition. The inverse estimate first puts both
+tails in the interior of $K_r$. Since
+$T_a((0,1))=(1/(a+1),1/a)$, the unique first positive digit there is
+$a$, with an interior remainder. Repeated inversion recovers the asserted
+window. A past exhausted at or before the end of that window cannot have such
+an interior remainder. The literal reversed finite expansion, including terminal
+ones, is retained.
+
+The threshold uses exact rational cylinder endpoints and the metallic
+root. It is a sufficient threshold; optimal thresholds for individual
+windows are not claimed. With the continuants in Proof.md (4), it also
+has the explicit algebraic form
 
 ```math
 \delta_r=
 \frac1{P_r\beta_a+P_{r+1}}
 \min\left\{\frac{\beta_a}{P_{r+1}},
-            \frac{1-\beta_a}{P_r+P_{r+1}}\right\}.       \tag{7}
+            \frac{1-\beta_a}{P_r+P_{r+1}}\right\}.       \tag{2}
 ```
 
-To verify (7), subtract $T_a^r(\beta_a)=\beta_a$ from (4) and use
-the determinant of the fractional-linear map:
+Indeed, subtract $T_a^r(\beta_a)=\beta_a$ from the fractional-linear
+formula to obtain
 
 ```math
 |T_a^r(t)-\beta_a|
@@ -70,34 +82,41 @@ the determinant of the fractional-linear map:
  {(P_rt+P_{r+1})(P_r\beta_a+P_{r+1})}.
 ```
 
-Evaluate at $t=0,1$ and take the smaller endpoint distance. The
-localization criterion is sufficient; optimal thresholds for each fixed
-window are not claimed.
+Evaluating at $t=0,1$ gives (2). The Lean digit-window contract uses the
+sorted iterated endpoints directly.
 
 ## Effective convergence of all run constants
 
-The map $T_a$ is $a^{-2}$-Lipschitz on $[0,1]$. Hence every point in
-$I_r^e$ is within $a^{-2r}$ of $\beta_a$. Each fraction in (1) is
-1-Lipschitz in each coordinate, so its minimum and maximum are
-1-Lipschitz for the sum metric. Therefore
+For real $a>1$, $T_a$ is $a^{-2}$-Lipschitz on $[0,1]$. Every point in
+$I_r^e$ is therefore within $a^{-2r}$ of $\beta_a$. For $a\ge1$ the
+two envelopes satisfy, on nonnegative coordinates,
+
+```math
+|F_a(x,y)-F_a(u,v)|\le|x-u|+|y-v|,\qquad
+|G_a(x,y)-G_a(u,v)|\le|x-u|+|y-v|.
+```
+
+Each side fraction has this bound by positive-denominator differences;
+the central fraction does as well. Taking a finite minimum or maximum
+preserves it. Applying the estimate at the extremizing corners gives
 
 ```math
 0<c_a-C_{a;r,s}^{e,f}\le a^{-2r}+a^{-2s},\qquad
-0<U_{a;r,s}^{e,f}-c_a\le a^{-2r}+a^{-2s}.               \tag{8}
+0<U_{a;r,s}^{e,f}-c_a\le a^{-2r}+a^{-2s}.               \tag{3}
 ```
 
-These estimates prove convergence without a numerical extrapolation.
-They are not claimed to have optimal rates. Exact interval widths are
-available from the same continuant identity:
+Both sharp constants thus converge to the classical threshold as both
+run lengths grow. These rates are proved bounds and are not claimed to
+be optimal. Exact interval widths follow from the continuant identity:
 
 ```math
 |T_a^r(v)-T_a^r(u)|
-=\frac{v-u}{(P_ru+P_{r+1})(P_rv+P_{r+1})}\quad(u<v).
+=\frac{v-u}{(P_ru+P_{r+1})(P_rv+P_{r+1})}\qquad(0\le u<v\le1).
 ```
 
 ## Exact regions for near extremizers
 
-For $0<t<a$ and nonnegative $x,y$, define
+For $0<t<a$ and nonnegative $x,y$, let
 $H_t(z)=t(a+z)/(a+z-t)$. Clearing positive denominators gives
 
 ```math
@@ -112,22 +131,30 @@ G_a(x,y)\le t
 \iff x+y\ge1/t-a,\quad x\le H_t(y),\quad y\le H_t(x).
 ```
 
-Intersect these regions with any prescribed cylinder rectangle. Taking
-$t=C(R)-\epsilon>0$ gives exactly the points within $\epsilon$ of
-the lower-envelope supremum. Taking $t=U(R)+\epsilon<a$ gives the
-corresponding upper-envelope sublevel region. These are exact geometric
-descriptions, including degenerate cylinders.
+Intersect with a prescribed cylinder rectangle. Taking
+$t=C(R)-\epsilon>0$ describes exactly the lower-envelope values within
+$\epsilon$ of the supremum. Taking $t=U(R)+\epsilon<a$ gives the
+upper-envelope sublevel region. These equivalences include degenerate
+rectangles and do not assert a separate optimal stability coefficient
+for the upper envelope.
 
-## Fixed pasts and finite digit words
+## Fixed words and boundary attainability
 
-The rectangle formulas accept arbitrary rational-endpoint cylinders,
-not just constant-digit runs. A prescribed finite word defines an
-iterated fractional-linear image of $[0,1]$. A fully fixed finite past
-defines a singleton first interval. The resulting sharp constants use
-boundary intersections as well as corners when necessary.
+A nonempty positive chronological word $w$ fixes the past
+$x=[0;w^{\mathrm{rev}}]$ and the index $|w|-1$. The rectangle formulas
+apply with this singleton first interval. For any terminated future run
+class, irrational inputs preserving the whole word approach both sharp
+constants at that same index. The optimizing future coordinates are
+rational, so neither bound is attained by an actual irrational future.
 
-If the fixed positive past is rational, both optimizing future
-coordinates are rational. An irrational future cannot attain them, but
-approaches them through admissible digit strings. In contrast, an
-infinite all-$a$ future has coordinate $\beta_a$ and permits the
-attained endpoint examples described in Proof.md.
+An infinite all-$a$ future behaves differently: its coordinate is
+$\beta_a$, and the endpoint examples in Proof.md attain the corresponding
+terminated-past bounds. The exhausted all-$a$ past, the infinite constant
+future, and the fully constant input are treated separately in the formal
+statements.
+
+The generic rectangle theorem also applies geometrically to
+rational-endpoint cylinders produced by arbitrary finite digit words.
+Boundary intersections, as well as corners, can be necessary. The actual
+fixed-word sharpness contracts in this package specify a constant-digit
+future run and its departure side.

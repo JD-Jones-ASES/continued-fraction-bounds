@@ -117,16 +117,11 @@ theorem pastTailWord_tendsto {a : ℤ} (ha : 2 ≤ a) (e : Departure) (right : B
       (nhds (selectedDepartureEndpoint a e right)) := by
   have ha' : (2:ℝ) ≤ a := by exact_mod_cast ha
   cases e <;> cases right
-  · simpa [pastTailWord, prependWord, prependDigit, selectedDepartureEndpoint,
-      departureLeft, show (a:ℝ)-1+1=(a:ℝ) by ring] using
-      (tendsto_const_nhds (x := (a:ℝ)⁻¹) (f := atTop (α := ℕ)))
-  · simpa [pastTailWord, prependWord, prependDigit, selectedDepartureEndpoint,
-      departureRight] using (tendsto_const_nhds (x := (1:ℝ)) (f := atTop (α := ℕ)))
+  · simp [pastTailWord, prependWord, prependDigit, selectedDepartureEndpoint, departureLeft]
+  · simp [pastTailWord, prependWord, prependDigit, selectedDepartureEndpoint, departureRight]
   · simpa [pastTailWord, prependWord, prependDigit, selectedDepartureEndpoint,
       departureLeft] using largeDigit_tendsto (a:ℝ) 1
-  · simpa [pastTailWord, prependWord, prependDigit, selectedDepartureEndpoint,
-      departureRight] using
-      (tendsto_const_nhds (x := ((a:ℝ)+1)⁻¹) (f := atTop (α := ℕ)))
+  · simp [pastTailWord, prependWord, prependDigit, selectedDepartureEndpoint, departureRight]
 
 theorem futureTailWord_tendsto {a : ℤ} (ha : 2 ≤ a) (e : Departure) (right : Bool) :
     Tendsto (fun N => prependWord (futureTailWord a e right N) silverTail) atTop

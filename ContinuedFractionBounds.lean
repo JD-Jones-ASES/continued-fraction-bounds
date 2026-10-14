@@ -4,4 +4,9 @@ public import ContinuedFractionBounds.ActualRuns
 public import ContinuedFractionBounds.ClassicalBounds
 public import ContinuedFractionBounds.LevelSets
 public import ContinuedFractionBounds.Applications
-public import ContinuedFractionBounds.ContinuedFractionsRuns
+public import ContinuedFractionBounds.UpperRectangleOptimization
+public import ContinuedFractionBounds.ContinuedFractionsFutureDensity
+public import ContinuedFractionBounds.MetallicBoundary
+public import ContinuedFractionBounds.DigitWindows
+public import ContinuedFractionBounds.RunChecks
+public import ContinuedFractionBounds.FixedPast
