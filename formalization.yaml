@@ -1,0 +1,127 @@
+version: v0.4
+project:
+  name: Sharp continued-fraction bounds from exact digit runs
+  description: >-
+    Proves sharp upper bounds for the minimum and lower bounds for the
+    maximum of three consecutive ordinary continued-fraction approximation
+    coefficients, for every integer central digit at least two, every
+    finite exact past and future run length, and both departure sides.
+    The constants are rational four-corner expressions with unique
+    extremizers. Actual irrational inputs satisfy strict inequalities
+    and approach both constants within their prescribed digit classes.
+    A sharp global linear inverse estimate is proved for every real
+    parameter at least two, with its complete three-point equality locus
+    and coefficient optimality over actual ordinary convergents.
+  authors: [JD Jones]
+  responsible_maintainers: [JD Jones]
+  license: MIT
+classification:
+  arxiv: [math.NT]
+  msc2020: ['11J70', '11A55', '26D07']
+sources:
+  - title: Sharp continued-fraction bounds from exact digit runs
+    type: original-proof
+    authors: [JD Jones]
+    relationship: other
+    note: >-
+      This project first presents its exact-run classification and sharp
+      inverse estimate. Proof.md and Applications.md accompany the same
+      development and are not distinct earlier sources. The original-proof
+      provenance designation does not assert worldwide priority. Classical
+      metallic thresholds and natural-extension geometry are credited below.
+  - title: Sharpening Borel's result in Diophantine approximation
+    authors: [Savita S. Adhin, Ayreena Bakhtawar, Cor Kraaikamp]
+    id: https://arxiv.org/abs/2607.04421v1
+    type: paper
+    location: Equations (15)-(16), Sections 3-5
+    relationship: background
+    note: >-
+      Develops the central-digit-one refinement. Section 5 explicitly
+      suggests an arbitrary-digit extension and a refinement of the
+      conjugate maximum bound. That suggestion and the geometric method
+      are prior work; the present package treats exact runs for digits
+      at least two and the quantitative inverse estimate.
+  - title: Generalization of some classical theorems concerning triples of consecutive convergents to simple continued fractions
+    authors: [F. Bagemihl, J. R. McLaughlin]
+    type: paper
+    location: J. Reine Angew. Math. 221 (1966), 146-149
+    relationship: background
+    note: >-
+      Classical arbitrary-digit minimum threshold, checked through the
+      accessible later literature. Original full text was not retrieved.
+  - title: The conjugate property of the Borel theorem on diophantine approximation
+    authors: [J. Tong]
+    type: paper
+    location: Math. Z. 184 (1983), 151-153
+    relationship: background
+    note: >-
+      Classical arbitrary-digit maximum threshold, checked as restated
+      in later papers. Original full text was not retrieved.
+  - title: Sharp bounds for symmetric and asymmetric Diophantine approximation
+    authors: [Cor Kraaikamp, Ionica Smeets]
+    id: https://arxiv.org/abs/0806.1457v2
+    type: paper
+    location: Sections 2-4
+    relationship: background
+    note: >-
+      Related natural-extension rectangles and boundary-intersection
+      optimization for different approximation quantities. Sources.md
+      gives the broader literature account and access limitations.
+automation:
+  methods:
+    - method: agent
+      models: [GPT-6]
+      framework: OpenAI Codex
+      tool_setup: OpenAI Codex with Lean and exact arithmetic tools
+      prompting_notes: >-
+        Agents developed and reviewed mathematical arguments, formal
+        proofs, documentation, and verification under JD Jones's direction.
+    - method: other
+      models: [Gemini-Argon]
+      tool_setup: Preliminary mathematical discussion
+  notes: >-
+    Disclosure.md records automated contributions. Lean tactics construct
+    kernel-checkable proof terms. Exact Python replays are finite checks,
+    not proof oracles or substitutes for unrestricted formal statements.
+review:
+  status: agent-reviewed
+  notes: >-
+    Separate agent review checked ordinary-convergent semantics, indexing,
+    exact departures, finite-endpoint alternatives, sharpness quantifiers,
+    and the stability equality locus. Verification.md records the
+    reproducible mechanical checks. No independent human specialist
+    review or worldwide-priority determination is claimed.
+status:
+  scope: >-
+    The compared actual-run statements use the ordinary convergents and
+    actual floor/fract digits of every irrational real input. Sharpness
+    varies the finite index and does not assert optimality at a separately
+    fixed index. The real stability parameter ranges over all a at least two.
+    Formal coverage of additional boundary and rectangle results is
+    specified in Verification.md and the Comparator configuration.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: [propext, Classical.choice, Quot.sound]
+  main_results:
+    - declaration: ContinuedFractionBounds.actual_run_bounds
+      file: ContinuedFractionBounds/ActualRuns.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.actual_run_lower_sharp
+      file: ContinuedFractionBounds/ActualRuns.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.actual_run_upper_sharp
+      file: ContinuedFractionBounds/ActualRuns.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.global_stability
+      file: ContinuedFractionBounds/Stability.lean
+      comparator_config: comparator.json
+    - declaration: ContinuedFractionBounds.actual_stabilityConstant_optimal
+      file: ContinuedFractionBounds/Applications.lean
+      comparator_config: comparator.json
+fidelity:
+  divergences: >-
+    Lean numbers the triple n,n+1,n+2 and the central digit n+2;
+    the written proof numbers the same triple n-1,n,n+1 for n at least one.
+    Closed run cells include rational endpoints solely to express sharp
+    suprema and infima. Actual infinite futures are irrational, which
+    supplies strictness. Finite reversed expansions ending in one are retained.

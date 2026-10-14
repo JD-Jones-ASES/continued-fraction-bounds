@@ -1,0 +1,6 @@
+.lake/
+__pycache__/
+*.pyc
+.DS_Store
+_palomar-*/
+_formalization-schema/
