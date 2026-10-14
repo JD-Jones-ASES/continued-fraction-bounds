@@ -1,0 +1,23 @@
+{
+  "source_commit": "a7657a01aec49be60f36a2cda8e6c6bfcd3840c3",
+  "repository": "https://github.com/JD-Jones-ASES/continued-fraction-bounds",
+  "workflow_run": 38634656795,
+  "workflow_url": "https://github.com/JD-Jones-ASES/continued-fraction-bounds/actions/runs/38634656795",
+  "conclusion": "success",
+  "artifacts": [
+    {
+      "file": "formal-verification-a7657a01aec49be60f36a2cda8e6c6bfcd3840c3.zip",
+      "artifact_id": 11928525336,
+      "sha256": "b8919b8a89da86d242b17f0f5d2ae491cdb8dc0e1c41db0f2c2e303af4b05726",
+      "size": 64977
+    },
+    {
+      "file": "fresh-project-build-a7657a01aec49be60f36a2cda8e6c6bfcd3840c3.zip",
+      "artifact_id": 11927648299,
+      "sha256": "f9a9e10abc2aca4da20973b33313977af4112dac39dc1e9815e34daed9d99e13",
+      "size": 22806
+    }
+  ],
+  "scope": "Exact-source-commit formal checks and separate fresh project build; not evidence of registry submission or human peer review.",
+  "metadata_workflow_url": "https://github.com/JD-Jones-ASES/continued-fraction-bounds/actions/runs/38634656916"
+}

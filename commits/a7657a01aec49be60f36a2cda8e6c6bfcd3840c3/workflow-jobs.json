@@ -1,0 +1,245 @@
+{
+  "total_count": 2,
+  "jobs": [
+    {
+      "id": 116094617509,
+      "run_id": 38634656795,
+      "workflow_name": "Verify exact continued-fraction-bounds commit",
+      "head_branch": "codex/review-improvements",
+      "run_url": "https://api.github.com/repos/JD-Jones-ASES/continued-fraction-bounds/actions/runs/38634656795",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVJDYg88AAAAbB8dHpQ",
+      "head_sha": "a7657a01aec49be60f36a2cda8e6c6bfcd3840c3",
+      "url": "https://api.github.com/repos/JD-Jones-ASES/continued-fraction-bounds/actions/jobs/116094617509",
+      "html_url": "https://github.com/JD-Jones-ASES/continued-fraction-bounds/actions/runs/38634656795/job/116094617509",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-14T20:44:50Z",
+      "started_at": "2026-10-14T20:44:52Z",
+      "completed_at": "2026-10-14T20:51:21Z",
+      "name": "formal-verification",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-14T20:44:53Z",
+          "completed_at": "2026-10-14T20:44:55Z"
+        },
+        {
+          "name": "Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-14T20:44:55Z",
+          "completed_at": "2026-10-14T20:44:56Z"
+        },
+        {
+          "name": "Confirm exact candidate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-14T20:44:56Z",
+          "completed_at": "2026-10-14T20:44:56Z"
+        },
+        {
+          "name": "Validate formalization metadata",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-14T20:44:56Z",
+          "completed_at": "2026-10-14T20:44:59Z"
+        },
+        {
+          "name": "Install pinned Lean and retrieve pinned Mathlib cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-14T20:44:59Z",
+          "completed_at": "2026-10-14T20:46:22Z"
+        },
+        {
+          "name": "Check proof sources and theorem contracts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-14T20:46:22Z",
+          "completed_at": "2026-10-14T20:46:23Z"
+        },
+        {
+          "name": "Build the complete formal package",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-14T20:46:23Z",
+          "completed_at": "2026-10-14T20:47:50Z"
+        },
+        {
+          "name": "Audit principal and supporting theorem axioms",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-14T20:47:50Z",
+          "completed_at": "2026-10-14T20:48:01Z"
+        },
+        {
+          "name": "Replay exact arithmetic and mathematical negative controls",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-14T20:48:01Z",
+          "completed_at": "2026-10-14T20:50:02Z"
+        },
+        {
+          "name": "Install the official pinned sandbox",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-14T20:50:02Z",
+          "completed_at": "2026-10-14T20:50:16Z"
+        },
+        {
+          "name": "Compare statements and replay Lean, NanoDa and con-ron",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-14T20:50:16Z",
+          "completed_at": "2026-10-14T20:51:17Z"
+        },
+        {
+          "name": "Confirm tracked sources remained unchanged",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-14T20:51:17Z",
+          "completed_at": "2026-10-14T20:51:17Z"
+        },
+        {
+          "name": "Save exact-commit verification evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-14T20:51:17Z",
+          "completed_at": "2026-10-14T20:51:19Z"
+        },
+        {
+          "name": "Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26,
+          "started_at": "2026-10-14T20:51:19Z",
+          "completed_at": "2026-10-14T20:51:19Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27,
+          "started_at": "2026-10-14T20:51:19Z",
+          "completed_at": "2026-10-14T20:51:19Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/JD-Jones-ASES/continued-fraction-bounds/check-runs/116094617509",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000003383,
+      "runner_name": "GitHub Actions 1000003383",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 116094617826,
+      "run_id": 38634656795,
+      "workflow_name": "Verify exact continued-fraction-bounds commit",
+      "head_branch": "codex/review-improvements",
+      "run_url": "https://api.github.com/repos/JD-Jones-ASES/continued-fraction-bounds/actions/runs/38634656795",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVJDYg88AAAAbB8dI4g",
+      "head_sha": "a7657a01aec49be60f36a2cda8e6c6bfcd3840c3",
+      "url": "https://api.github.com/repos/JD-Jones-ASES/continued-fraction-bounds/actions/jobs/116094617826",
+      "html_url": "https://github.com/JD-Jones-ASES/continued-fraction-bounds/actions/runs/38634656795/job/116094617826",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-14T20:44:50Z",
+      "started_at": "2026-10-14T20:44:52Z",
+      "completed_at": "2026-10-14T20:48:07Z",
+      "name": "fresh-project-build",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-14T20:44:53Z",
+          "completed_at": "2026-10-14T20:44:54Z"
+        },
+        {
+          "name": "Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-14T20:44:54Z",
+          "completed_at": "2026-10-14T20:44:55Z"
+        },
+        {
+          "name": "Confirm exact candidate and fresh project state",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-14T20:44:55Z",
+          "completed_at": "2026-10-14T20:44:55Z"
+        },
+        {
+          "name": "Run leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-14T20:44:55Z",
+          "completed_at": "2026-10-14T20:46:22Z"
+        },
+        {
+          "name": "Rebuild all project sources on a separate fresh runner",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-14T20:46:22Z",
+          "completed_at": "2026-10-14T20:48:05Z"
+        },
+        {
+          "name": "Save fresh-build evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-14T20:48:05Z",
+          "completed_at": "2026-10-14T20:48:06Z"
+        },
+        {
+          "name": "Post Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-14T20:48:06Z",
+          "completed_at": "2026-10-14T20:48:06Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-14T20:48:06Z",
+          "completed_at": "2026-10-14T20:48:06Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/JD-Jones-ASES/continued-fraction-bounds/check-runs/116094617826",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000003384,
+      "runner_name": "GitHub Actions 1000003384",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

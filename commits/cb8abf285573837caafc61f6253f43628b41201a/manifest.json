@@ -18,5 +18,6 @@
       "size": 38580
     }
   ],
-  "scope": "Exact-source-commit formal checks and separate fresh project build; not evidence of registry submission or human peer review."
+  "scope": "Exact-source-commit formal checks and separate fresh project build; not evidence of registry submission or human peer review.",
+  "metadata_workflow_url": "https://github.com/JD-Jones-ASES/continued-fraction-bounds/actions/runs/38556746702"
 }
